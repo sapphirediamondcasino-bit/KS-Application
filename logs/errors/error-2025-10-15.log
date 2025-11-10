@@ -1,0 +1,5 @@
+2025-10-15 16:48:45 [ERROR]: Slash command execution error {"command":"ticket","error":"serverDb.updateTicketSettings is not a function"}
+TypeError: serverDb.updateTicketSettings is not a function
+    at Object.execute (C:\Users\Owner\OneDrive\Desktop\KS Application Bot\discord\ticket\setup.js:43:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Client.<anonymous> (C:\Users\Owner\OneDrive\Desktop\KS Application Bot\core\bot.js:127:7)

@@ -1,0 +1,34 @@
+2025-10-16 00:47:59 [INFO]: Database Write {"collection":"backup","operation":"backupAll","recordCount":1,"success":true,"duration":"0ms"}
+2025-10-16 01:47:59 [INFO]: Database Write {"collection":"backup","operation":"backupAll","recordCount":1,"success":true,"duration":"0ms"}
+2025-10-16 02:35:21 [INFO]: Received SIGINT, shutting down gracefully...
+2025-10-16 02:35:21 [INFO]: Shutting down bot: SIGINT received
+2025-10-16 02:35:21 [INFO]: Database Write {"collection":"backup","operation":"backupAll","recordCount":1,"success":true,"duration":"0ms"}
+2025-10-16 05:31:01 [INFO]: ============================================================
+2025-10-16 05:31:01 [INFO]: KS Bot - Application & Ticket System with Roblox Integration
+2025-10-16 05:31:01 [INFO]: Version 2.0.0
+2025-10-16 05:31:01 [INFO]: ============================================================
+2025-10-16 05:31:01 [INFO]: Initializing bot...
+2025-10-16 05:31:01 [INFO]: Initializing database system...
+2025-10-16 05:31:01 [INFO]: Initializing database system...
+2025-10-16 05:31:01 [INFO]: Database system initialized successfully
+2025-10-16 05:31:01 [INFO]: Loading 21 command files...
+2025-10-16 05:31:01 [INFO]: Successfully loaded 15 commands
+2025-10-16 05:31:01 [INFO]: Logging in to Discord...
+2025-10-16 05:31:02 [INFO]: ============================================================
+2025-10-16 05:31:02 [INFO]: Bot is now online and ready!
+2025-10-16 05:31:02 [INFO]: ============================================================
+2025-10-16 05:31:02 [INFO]: Logged in as KS Application Bot#7136!
+2025-10-16 05:31:02 [INFO]: Serving 1 guilds
+2025-10-16 05:34:25 [INFO]: Received SIGINT, shutting down gracefully...
+2025-10-16 05:34:25 [INFO]: Shutting down bot: SIGINT received
+2025-10-16 05:34:25 [ERROR]: servers {"0":"u","1":"p","2":"d","3":"a","4":"t","5":"e","6":"S","7":"e","8":"r","9":"v","10":"e","11":"r"}
+2025-10-16 05:34:25 [ERROR]: servers {"0":"u","1":"p","2":"d","3":"a","4":"t","5":"e","6":"T","7":"i","8":"c","9":"k","10":"e","11":"t","12":"S","13":"e","14":"t","15":"t","16":"i","17":"n","18":"g","19":"s"}
+2025-10-16 05:34:25 [ERROR]: Slash command execution error {"command":"ticket","error":"ENOENT: no such file or directory, open 'C:\\Users\\Owner\\OneDrive\\Desktop\\KS Application Bot\\data\\servers\\707320040969732127.json'"}
+Error: ENOENT: no such file or directory, open 'C:\Users\Owner\OneDrive\Desktop\KS Application Bot\data\servers\707320040969732127.json'
+2025-10-16 05:34:25 [ERROR]: servers {"0":"g","1":"e","2":"t","3":"S","4":"e","5":"r","6":"v","7":"e","8":"r"}
+2025-10-16 05:34:25 [ERROR]: Slash command execution error {"command":"dashboard","error":"Cannot read properties of null (reading 'tickets')"}
+TypeError: Cannot read properties of null (reading 'tickets')
+    at Object.updateSettings (C:\Users\Owner\OneDrive\Desktop\KS Application Bot\discord\dashboard\tickets.js:100:39)
+    at async Object.execute (C:\Users\Owner\OneDrive\Desktop\KS Application Bot\discord\dashboard\tickets.js:43:7)
+    at async Client.<anonymous> (C:\Users\Owner\OneDrive\Desktop\KS Application Bot\core\bot.js:127:7)
+2025-10-16 05:34:25 [INFO]: Database Write {"collection":"backup","operation":"backupAll","recordCount":1,"success":true,"duration":"0ms"}

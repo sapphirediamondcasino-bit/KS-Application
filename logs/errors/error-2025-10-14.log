@@ -1,0 +1,7 @@
+2025-10-14 01:04:25 [ERROR]: Failed to load command roblox.js {"error":"Cannot find module '../../../roblox/utils/verification'\nRequire stack:\n- C:\\Users\\Owner\\OneDrive\\Desktop\\KS Application Bot\\discord\\dashboard\\roblox.js\n- C:\\Users\\Owner\\OneDrive\\Desktop\\KS Application Bot\\core\\bot.js\n- C:\\Users\\Owner\\OneDrive\\Desktop\\KS Application Bot\\index.js"}
+2025-10-14 01:04:25 [ERROR]: Failed to parse encryption key {"service":"roblox","error":{}}
+2025-10-14 01:04:25 [ERROR]: Failed to load command interactionCreate.js {"error":"Encryption key must be 32 bytes (64 hex characters)"}
+2025-10-14 03:05:15 [ERROR]: Failed to parse encryption key {"service":"roblox","error":{}}
+2025-10-14 03:05:15 [ERROR]: Failed to load command roblox.js {"error":"Encryption key must be 32 bytes (64 hex characters)"}
+2025-10-14 03:05:15 [ERROR]: Failed to parse encryption key {"service":"roblox","error":{}}
+2025-10-14 03:05:15 [ERROR]: Failed to load command interactionCreate.js {"error":"Encryption key must be 32 bytes (64 hex characters)"}
