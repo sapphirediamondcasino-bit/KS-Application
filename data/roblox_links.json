@@ -1,0 +1,39 @@
+
+ {
+    "_comment": "Roblox group links storage",
+    "_structure": {
+      "serverId": {
+        "serverId": "string",
+        "groupId": "string",
+        "placeIds": ["string"],
+        "apiKeyHash": "string",
+        "apiKeyCreated": "ISO date",
+        "apiKeyLastUsed": "ISO date or null",
+        "status": "pending_verification | verified | verification_failed | suspended",
+        "verified": false,
+        "verifiedAt": "ISO date or null",
+        "enabledTemplates": ["templateId"],
+        "roleMappings": {
+          "templateId": {
+            "discordRoleId": "string",
+            "robloxRank": 0
+          }
+        },
+        "settings": {
+          "requirePlaytime": 60,
+          "rateLimitMinutes": 60,
+          "notificationsEnabled": true,
+          "autoSync": true,
+          "syncIntervalMinutes": 5
+        },
+        "analytics": {
+          "totalSubmissions": 0,
+          "totalSyncs": 0,
+          "lastSyncAt": null,
+          "failedSyncs": 0
+        },
+        "createdAt": "ISO date",
+        "updatedAt": "ISO date"
+      }
+    }
+  }
