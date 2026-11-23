@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KS Applications | Kurrasch Systems Studios</title>
+<meta name="description" content="Build applications, share one link, review in one inbox. The bot handles the Discord side. Made by Kurrasch Systems Studios.">
+<meta name="theme-color" content="#07090f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23c8f542%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-size=%2720%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27%230a0d14%27 font-family=%27sans-serif%27%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07090f;--bg2:#0b0f19;--surface:#0f1421;--surface2:#151b2c;--ink:#eef1f8;--mute:#8b95ad;--line:rgba(255,255,255,.09);--acc:#c8f542;--accink:#0a0d14;--ok:#4cd9a0;--no:#ff6b6b;--wait:#f0b84d;--r:12px;color-scheme:dark}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(900px 520px at 85% -10%,rgba(200,245,66,.11),transparent 60%),radial-gradient(760px 460px at -10% 8%,rgba(88,101,242,.14),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000 0,transparent 68%);mask-image:radial-gradient(ellipse at 50% 0,#000 0,transparent 68%);opacity:.7;pointer-events:none}
+h1,h2,h3,.brand,.big,.stat b{font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.08}
+h1{font-size:clamp(2.4rem,5.5vw,4rem);font-weight:800;letter-spacing:-.025em}h2{font-size:1.7rem;font-weight:800;letter-spacing:-.01em}h3{font-size:1.1rem;font-weight:600}.h2{font-size:2rem;font-weight:800}
+a{color:var(--acc)}button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+header{position:sticky;top:0;z-index:50;background:rgba(7,9,15,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:0 auto;padding:.85rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{font-size:1.25rem;font-weight:800;color:var(--ink);text-decoration:none;margin-right:auto;display:flex;align-items:center}
+.mk{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--acc);color:var(--accink);margin-right:.6rem;font-size:1.05rem}
+.nav a{color:var(--mute);text-decoration:none;padding:.4rem .75rem;border-radius:8px}.nav a:hover,.nav a.on{color:var(--ink);background:var(--surface2)}
+main{max-width:1180px;width:100%;margin:0 auto;padding:2rem 1.25rem 2rem;flex:1}
+.btn{display:inline-block;background:var(--acc);color:var(--accink);border:1px solid var(--acc);padding:.65rem 1.2rem;border-radius:10px;font-weight:600;cursor:pointer;text-decoration:none;transition:filter .15s,transform .15s}
+.btn:hover{filter:brightness(1.08)}.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--mute);filter:none}
+.btn.danger{background:transparent;color:var(--no);border-color:rgba(255,107,107,.45)}
+.btn.lg{padding:.85rem 1.6rem;font-size:1.05rem}.btn.sm{padding:.32rem .75rem;font-size:.9rem}.btn:disabled{opacity:.5;cursor:not-allowed}
+.sub{color:var(--mute)}.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}
+.pill{display:inline-block;border:1px solid var(--line);background:var(--surface);border-radius:30px;padding:.25rem .9rem;color:var(--mute);font-size:.9rem;margin-bottom:1.2rem}.pill b{color:var(--acc);font-weight:600}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:3.5rem;align-items:center;padding:3rem 0 3.5rem}
+.hero p.lead{font-size:1.18rem;color:var(--mute);margin:1.3rem 0 2rem;max-width:34rem}.hl{color:var(--acc)}
+.mock{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.55);overflow:hidden}
+.mock-h{display:flex;gap:.4rem;align-items:center;padding:.8rem 1rem;border-bottom:1px solid var(--line);background:var(--surface2)}.mock-h .sub{margin-left:.6rem;font-size:.9rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.mock-b{padding:1.4rem;position:relative}.mock-b .stamp{position:absolute;right:1.1rem;top:1rem}
+.bubble{margin-top:1.3rem;background:#5865f2;color:#fff;border-radius:12px;padding:.8rem 1rem;font-size:.92rem}.bubble i{font-style:normal;font-weight:600;display:block;margin-bottom:.15rem}
+.stamp{display:inline-block;border:2px solid currentColor;border-radius:6px;padding:.05rem .6rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;transform:rotate(-4deg);background:rgba(0,0,0,.2)}
+.s-pending{color:var(--wait)}.s-accepted{color:var(--ok)}.s-denied{color:var(--no)}.s-withdrawn{color:var(--mute)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:1.4rem 0}
+.strip div{color:var(--mute);font-size:.95rem}.strip b{display:block;color:var(--ink);font-family:'Bricolage Grotesque';font-size:1.25rem}
+.sec{padding:3.2rem 0 .5rem}.sec>h2{font-size:clamp(1.8rem,3.4vw,2.5rem);margin-bottom:.6rem}.lead2{color:var(--mute);max-width:42rem;margin-bottom:2rem}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1rem}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem;transition:border-color .2s}.feat:hover{border-color:rgba(200,245,66,.4)}
+.feat .n{color:var(--acc);font-family:'Bricolage Grotesque';font-weight:800;margin-bottom:.7rem}.feat p{color:var(--mute);margin-top:.45rem}
+.cases{display:flex;gap:.6rem;flex-wrap:wrap}.cases span{border:1px solid var(--line);border-radius:30px;padding:.45rem 1.1rem;background:var(--surface)}
+.band{margin:3.5rem 0 1rem;background:linear-gradient(135deg,rgba(200,245,66,.15),rgba(88,101,242,.12));border:1px solid var(--line);border-radius:20px;padding:2.5rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap}
+details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:.7rem}summary{cursor:pointer;font-weight:600}details p{color:var(--mute);margin-top:.6rem}
+.dh{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem}.stat b{display:block;font-size:2.3rem;font-weight:800}.stat b small{font-size:1rem;color:var(--mute);font-weight:600}.stat span{color:var(--mute);font-size:.92rem}
+.meter{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:.7rem}.meter i{display:block;height:100%;background:var(--acc)}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem}
+.app{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem;display:flex;flex-direction:column;gap:.85rem;transition:border-color .2s}.app:hover{border-color:rgba(200,245,66,.4)}
+.lk{display:block;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.45rem .65rem;font-size:.82rem;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+.tier{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem;display:flex;flex-direction:column;gap:.8rem}.tier.cur{border-color:var(--acc)}
+.big{font-size:2.8rem;font-weight:800}.big small{font-size:1rem;color:var(--mute);font-weight:600}
+.perks{list-style:none;color:var(--mute);font-size:.94rem}.perks li{padding:.12rem 0}.perks li::before{content:"✓ ";color:var(--acc)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.4rem;margin-bottom:1rem}
+.tag{display:inline-block;font-size:.82rem;border:1px solid var(--line);border-radius:20px;padding:.05rem .65rem;color:var(--mute)}
+.tag.ok{color:var(--ok);border-color:rgba(76,217,160,.5)}.tag.no{color:var(--no);border-color:rgba(255,107,107,.5)}
+.f{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem}.f>label,.lbl{font-weight:500}.f small{color:var(--mute)}
+input[type=text],input[type=number],input[type=datetime-local],select,textarea{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:.65rem .75rem;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);outline:none}textarea{min-height:96px;resize:vertical}
+select option{background:var(--surface)}
+.chk{display:flex;gap:.5rem;align-items:center;margin:.25rem 0}.chk input{width:auto;accent-color:var(--acc)}
+.q{border:1px solid var(--line);border-radius:var(--r);padding:1rem;margin-bottom:.8rem;background:var(--bg2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.ans{margin:.7rem 0}.ans b{display:block;font-weight:600}.ans span{white-space:pre-wrap;color:var(--mute);word-break:break-word}
+#toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.7rem 1.1rem;border-radius:10px;display:none;z-index:99;max-width:90vw;font-weight:500}
+.err{color:var(--no)}.ok{color:var(--ok)}
+.empty{text-align:center;padding:2.5rem 1rem}.empty p{color:var(--mute);margin:.5rem 0 1.2rem}
+footer{border-top:1px solid var(--line);margin-top:3rem;background:rgba(0,0,0,.3)}
+.fin{max-width:1180px;margin:0 auto;padding:3rem 1.25rem 2rem;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem}
+.fin h4{font-family:'Bricolage Grotesque',sans-serif;margin-bottom:.7rem}.fin p{color:var(--mute);max-width:22rem;margin-top:.7rem}
+.fin a{display:block;color:var(--mute);text-decoration:none;padding:.18rem 0}.fin a:hover{color:var(--ink)}
+.fb{max-width:1180px;margin:0 auto;padding:1.1rem 1.25rem 2rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--mute);font-size:.9rem}.fb b{color:var(--ink);font-weight:600}
+@media(max-width:860px){.hero,.grid2{grid-template-columns:1fr}.hero{gap:2rem}.fin{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.fin{grid-template-columns:1fr}.band{padding:1.6rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.prose{max-width:760px}.prose h2{font-size:1.35rem;margin:2rem 0 .5rem}.prose p,.prose li{color:var(--mute);margin:.5rem 0}.prose ul,.prose ol{padding-left:1.3rem}.prose strong{color:var(--ink)}.prose a{color:var(--acc)}
+.phead{padding:1.5rem 0 1.2rem}.phead h1{font-size:clamp(2rem,4.5vw,3rem)}
+a.feat{display:block;text-decoration:none;color:inherit}
+.stack{display:grid;gap:.7rem}.stack .btn{text-align:center;width:100%}
+.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}.tpl{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem;display:flex;flex-direction:column;gap:.7rem;align-items:flex-start}.tpl p{color:var(--mute);flex:1}.tpl .row{width:100%}
+.bars{display:flex;align-items:flex-end;gap:4px;height:90px}.bars div{flex:1;height:100%;display:flex;align-items:flex-end;background:var(--bg2);border-radius:4px}.bars i{display:block;width:100%;background:var(--acc);border-radius:4px;min-height:2px}
+.idrow{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.crumb{color:var(--mute);font-size:.9rem;margin-bottom:.4rem}
+.steplist{counter-reset:s}.steplist .feat::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--acc);color:var(--accink);font-weight:800;margin-bottom:.7rem}.steplist .n{display:none}
+
+.ban{padding:.55rem 2.5rem;text-align:center;background:var(--acc);color:var(--accink);font-weight:600;position:relative}.ban.warn{background:var(--wait)}.ban-x{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:inherit;font-size:1.3rem;cursor:pointer}
+.adm{display:grid;grid-template-columns:230px 1fr;gap:1.5rem;align-items:start}.side{position:sticky;top:80px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:.8rem;display:grid;gap:.2rem}
+.side a{display:flex;justify-content:space-between;align-items:center;padding:.5rem .7rem;border-radius:8px;color:var(--mute);text-decoration:none}.side a:hover,.side a.on{background:var(--surface2);color:var(--ink)}
+.badge{background:var(--acc);color:var(--accink);border-radius:20px;padding:0 .5rem;font-size:.78rem;font-weight:700;margin-left:.4rem}
+.chatwrap{display:grid;grid-template-columns:280px 1fr;min-height:520px}.cl{border-right:1px solid var(--line);overflow:auto;max-height:600px}.cc{padding:1rem}
+.cs{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);padding:.75rem;cursor:pointer}.cs:hover,.cs.on{background:var(--surface2)}.cs .sub{display:block;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msgs{display:flex;flex-direction:column;gap:.5rem;overflow:auto;max-height:420px;padding:.4rem}
+.m{max-width:82%;padding:.5rem .8rem;border-radius:12px;background:var(--surface2);word-break:break-word;white-space:pre-wrap}.m.me{align-self:flex-end;background:var(--acc);color:var(--accink)}.m.them{align-self:flex-start}.m.system{align-self:center;background:none;color:var(--mute);font-size:.85rem}.m small{display:block;opacity:.7;font-size:.72rem}
+.cw-btn{position:fixed;right:20px;bottom:20px;z-index:90;background:var(--acc);color:var(--accink);border:none;border-radius:30px;padding:.75rem 1.2rem;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.cw-panel{position:fixed;right:20px;bottom:78px;width:min(360px,calc(100vw - 40px));max-height:min(580px,calc(100vh - 110px));overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.55);z-index:90;display:flex;flex-direction:column}.cw-panel[hidden]{display:none}
+.cw-h{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1rem;border-bottom:1px solid var(--line)}.cw-f{display:grid;gap:.6rem;padding:1rem}.cw-panel .msgs{padding:.8rem 1rem;min-height:180px}
+.dot2{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mute);margin-right:.4rem}.dot2.on{background:var(--ok)}
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}.fake{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem;color:var(--mute);font-size:.9rem}
+.chip{display:inline-block;background:rgba(76,217,160,.15);color:var(--ok);border-radius:20px;padding:.1rem .7rem;font-size:.85rem;margin-top:.6rem}
+@media(max-width:820px){.adm,.chatwrap{grid-template-columns:1fr}.side{position:static}.cl{border-right:none;border-bottom:1px solid var(--line);max-height:220px}}
+.hintbox{display:flex;gap:1rem;align-items:flex-start;justify-content:center;padding:.7rem 2.5rem;background:var(--surface2);border-bottom:1px solid var(--line);color:var(--ink);font-size:.92rem;position:relative}.hintbox b{color:var(--acc)}
+.tabs{display:flex;gap:.4rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem;flex-wrap:wrap}.tabs a{padding:.6rem 1rem;color:var(--mute);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px}.tabs a.on{color:var(--ink);border-color:var(--acc)}
+.up{color:var(--ok)}.down{color:var(--no)}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;flex:none}.donut::after{content:"";position:absolute;inset:24px;border-radius:50%;background:var(--surface)}
+.legend{display:grid;gap:.45rem}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.5rem}
+.axis{display:flex;justify-content:space-between;color:var(--mute);font-size:.8rem;margin-top:.3rem}.axis7{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;color:var(--mute);font-size:.8rem;margin-top:.3rem}
+.hb{height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;margin:.3rem 0 .9rem}.hb i{display:block;height:100%;background:var(--acc)}
+.sbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--bg2);margin:.6rem 0}.sbar i{display:block;height:100%}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:1rem}.grid3 .card{margin:0}
+.insight{padding:.6rem 0;border-bottom:1px solid var(--line);color:var(--mute)}.insight:last-child{border:none}.insight b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="banner"></div>
+<div id="hint"></div>
+<header><div class="bar">
+  <a class="brand" href="/"><span class="mk">K</span>KS Applications</a>
+  <nav class="nav row" id="nav" aria-label="Main"></nav>
+  <div id="acct" class="row"></div>
+</div></header>
+<main id="app"></main>
+<footer>
+  <div class="fin">
+    <div><a class="brand" href="/" style="display:flex"><span class="mk">K</span>KS Applications</a>
+      <p>Applications, partnerships and whitelists for Discord communities. Build it, share it, review it, and let the bot do the rest.</p></div>
+    <div><h4>Product</h4><a href="/features">Features</a><a href="/how-it-works">How it works</a><a href="/use-cases">Use cases</a><a href="/templates">Templates</a><a href="/pricing">Pricing</a></div>
+    <div><h4>Resources</h4><a href="/docs">Docs</a><a href="/faq">FAQ</a><a href="/about">About</a><a href="/contact">Contact</a></div>
+    <div><h4>Legal</h4><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a><a href="/cookies">Cookie Policy</a><a href="/acceptable-use">Acceptable Use</a><a href="/refunds">Refunds</a><a href="/security">Security</a><a href="/legal">All policies</a></div>
+  </div>
+  <div class="fb"><span>&copy; 2026 Kurrasch Gaming Merch Store LLC. All rights reserved.</span><span>Made by <b>Kurrasch Systems Studios</b>, a division of Kurrasch Gaming Merch Store LLC</span></div>
+</footer>
+<div id="toast" role="status"></div>
+<div id="cw"></div>
+
+<script>
+const SUPABASE_URL = 'https://nmadmgzihbyfsixdjwky.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_C85eWr3ucOxiMTr5GMjqCA_WG3xdG2t';
+const PAYPAL_CLIENT_ID = 'AcWQ7sMjxp_4A1kOdT3br0wjdm-nrdnPpnzTn5e9zn2Xg1nuFbgXbC8hfpT7Zf7Iszj_eO7MblDJuVcR';
+const KINDS = { staff: 'Staff', partnership: 'Partnership', whitelist: 'Whitelist', general: 'General' };
+const QTYPES = { short: 'Short answer', paragraph: 'Paragraph', number: 'Number', select: 'Dropdown', multiselect: 'Multiple choice', checkbox: 'Yes or no box' };
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true } });
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => 'q' + Math.random().toString(36).slice(2, 9);
+const state = { session: null, guilds: [], admin: null };
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { localStorage.removeItem(k); } catch (e) {} } };
+const linkFor = (slug) => location.origin + '/apply/' + slug;
+const DISCORD_CLIENT_ID = '1439843855514996786';
+const SUPPORT_EMAIL = '';
+const CO = 'Kurrasch Gaming Merch Store LLC', STUDIO = 'Kurrasch Systems Studios', UPDATED = 'November 22, 2026';
+const fmt = (d) => d ? new Date(d).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '';
+let toastT;
+function toast(msg, bad) { const t = $('#toast'); t.textContent = msg; t.style.background = bad ? 'var(--no)' : 'var(--ink)'; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => t.style.display = 'none', 4000); }
+
+// ---------- navigation + auth ----------
+// Sandboxed previews (about:srcdoc, blob:) block the History API, so fall back to in-memory routing there.
+let VIRT = (['about:', 'blob:', 'data:'].includes(location.protocol)) ? { pathname: '/', search: '' } : null;
+const LOC = { get pathname() { return VIRT ? VIRT.pathname : location.pathname; }, get search() { return VIRT ? VIRT.search : location.search; } };
+const here = () => LOC.pathname + LOC.search;
+function go(path, replace) {
+  const u = new URL(path, 'https://placeholder.invalid');
+  if (VIRT) VIRT = { pathname: u.pathname, search: u.search };
+  else if (path !== here()) {
+    try { history[replace ? 'replaceState' : 'pushState'](null, '', path); }
+    catch (e) { VIRT = { pathname: u.pathname, search: u.search }; }
+  }
+  render();
+  if (!replace) { try { window.scrollTo(0, 0); } catch (e) { /* ignore */ } }
+}
+const idents = () => state.session?.user?.identities || [];
+const hasDiscord = () => idents().some((i) => i.provider === 'discord');
+const hasX = () => idents().some((i) => i.provider === 'x' || i.provider === 'twitter');
+const CB = () => location.origin + '/auth/callback';
+const oauthOpts = (p) => ({ redirectTo: CB(), ...(p === 'discord' ? { scopes: 'identify guilds' } : {}) });
+function login() { if (LOC.pathname !== '/login') store.set('returnTo', here()); go('/login'); }
+function loginProvider(p) { sb.auth.signInWithOAuth({ provider: p, options: oauthOpts(p) }); }
+function linkProvider(p) { store.set('returnTo', here()); sb.auth.linkIdentity({ provider: p, options: oauthOpts(p) }).then(({ error }) => { if (error) toast('Could not connect: ' + error.message, true); }); }
+const download = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1500); };
+
+const NAV_PUBLIC = [['/features', 'Features'], ['/pricing', 'Pricing'], ['/docs', 'Docs'], ['/faq', 'FAQ']];
+const NAV_APP = [['/dashboard', 'Dashboard'], ['/servers', 'Servers'], ['/templates', 'Templates'], ['/pricing', 'Pricing'], ['/docs', 'Docs']];
+function renderAcct() {
+  const u = state.session?.user, m = u?.user_metadata || {}, p = LOC.pathname;
+  $('#nav').innerHTML = (u ? (state.admin ? NAV_APP.concat([['/admin', 'Admin']]) : NAV_APP) : NAV_PUBLIC).map(([h, t]) => `<a href="${h}" class="${p === h || p.startsWith(h + '/') ? 'on' : ''}">${t}</a>`).join('');
+  const name = String(m.full_name || m.name || m.user_name || 'Account').slice(0, 18);
+  $('#acct').innerHTML = u ? `<a class="btn ghost sm" href="/account">${esc(name)}</a><button class="btn ghost sm" data-act="logout">Log out</button>` : '<button class="btn sm" data-act="login">Log in</button>';
+}
+async function syncGuilds(tok) { const { error } = await sb.functions.invoke('sync-guilds', { body: { provider_token: tok } }); if (error) console.error('sync-guilds', error); }
+async function loadGuilds() { const { data } = await sb.from('guilds').select('id,name,icon,bot_present').order('name'); state.guilds = data || []; }
+
+let uidPrev = null, booted = false;
+async function afterSession(session) {
+  if (session) {
+    if (session.provider_token) { const k = session.provider_token.slice(-12); if (store.get('syncedTok') !== k) { await syncGuilds(session.provider_token); store.set('syncedTok', k); } }
+    await sb.rpc('sync_discord_identity');
+    const { data: role } = await sb.rpc('admin_role'); state.admin = role || null; renderAcct();
+    await admInit();
+    cwLoadSession().catch(() => {});
+    await loadGuilds();
+    const back = store.get('returnTo');
+    if (back) { store.del('returnTo'); booted = true; go(back, true); return; }
+    if (['/login', '/auth/callback'].includes(LOC.pathname)) { booted = true; go('/dashboard', true); return; }
+  } else { state.guilds = []; state.admin = null; admReset(); cwReset(); }
+  booted = true; render();
+}
+sb.auth.onAuthStateChange((evt, session) => {
+  const same = !!session?.user?.id && session.user.id === uidPrev;
+  state.session = session; uidPrev = session?.user?.id || null;
+  if (evt === 'TOKEN_REFRESHED' || (same && evt === 'SIGNED_IN')) return;
+  renderAcct();
+  setTimeout(() => afterSession(session), 0);
+});
+
+const vNeedLogin = () => '<div class="card empty"><h2>Log in to continue</h2><p>This page is for signed-in accounts.</p><button class="btn" data-act="login">Log in</button></div>';
+const vLanding = vNeedLogin;
+const vNotFound = () => '<div class="card empty"><h2>Page not found</h2><p>That address does not exist.</p><a class="btn" href="/">Back to the home page</a></div>';
+const connectBanner = () => (!state.session || hasDiscord()) ? '' : `<div class="card"><h3>Connect your Discord account</h3><p class="sub" style="margin:.4rem 0 1rem">Needed to link servers, and so the bot can message people. Applicants need it too.</p><button class="btn" data-act="linkdiscord">Connect Discord</button></div>`;
+
+async function emailLogin(form) {
+  const email = form.email.value.trim(), msg = $('#emMsg'), btn = $('#emBtn');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.className = 'err'; msg.textContent = 'Enter a valid email address.'; return; }
+  btn.disabled = true; msg.className = 'sub'; msg.textContent = 'Sending…';
+  const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: CB() } });
+  btn.disabled = false;
+  if (error) { msg.className = 'err'; msg.textContent = 'Could not send the link: ' + error.message; return; }
+  msg.className = 'ok'; msg.textContent = 'Check your inbox for the login link. Open it in this same browser.';
+}
+function vLogin() {
+  if (state.session) { setTimeout(() => go(store.get('returnTo') || '/dashboard', true), 0); return ''; }
+  return `<div style="max-width:440px;margin:2rem auto"><h1 class="h2">Log in or sign up</h1>
+    <p class="sub" style="margin:.5rem 0 1.4rem">One account for everything. By continuing you agree to the <a href="/terms">Terms of Service</a> and the <a href="/privacy">Privacy Policy</a>.</p>
+    <div class="stack"><button class="btn" data-act="discord">Continue with Discord</button><button class="btn ghost" data-act="x">Continue with X</button></div>
+    <p class="sub" style="text-align:center;margin:1.2rem 0">or use email</p>
+    <form id="ef" class="card"><div class="f"><label for="email">Email address</label><input type="text" id="email" name="email" inputmode="email" autocomplete="email"></div>
+      <button class="btn ghost" type="submit" id="emBtn">Email me a login link</button><p id="emMsg" class="sub" style="margin-top:.7rem" role="status"></p></form>
+    <p class="sub">Applying to a community? Your account needs Discord connected so reviewers and the bot know who you are.</p></div>`;
+}
+function vCallback() {
+  const err = new URLSearchParams(LOC.search).get('error_description');
+  if (err) return `<div class="card empty"><h2>Login did not finish</h2><p>${esc(err)}</p><a class="btn" href="/login">Try again</a></div>`;
+  setTimeout(() => { if (!state.session && LOC.pathname === '/auth/callback') $('#app').innerHTML = '<div class="card empty"><h2>Still waiting</h2><p>If this does not finish, go back and try again.</p><a class="btn" href="/login">Back to login</a></div>'; }, 10000);
+  return '<p class="sub">Signing you in…</p>';
+}
+
+// ---------- templates ----------
+const Q = (type, label, required = true, options = []) => ({ type, label, required, options });
+const TEMPLATES = [
+  { id: 'moderator', name: 'Moderator', kind: 'staff', blurb: 'Screen people who want to help moderate your server.', questions: [Q('number', 'How old are you?'), Q('short', 'Your timezone'), Q('paragraph', 'Previous moderation experience'), Q('paragraph', 'Why do you want to moderate here?'), Q('paragraph', 'Two members are arguing in chat. What do you do?'), Q('select', 'Weekly availability', true, ['Under 5 hours', '5 to 10 hours', '10+ hours']), Q('checkbox', 'I have read the server rules')] },
+  { id: 'helper', name: 'Helper / Support Staff', kind: 'staff', blurb: 'For people who answer questions and welcome new members.', questions: [Q('short', 'Your timezone'), Q('paragraph', 'Why do you want to help?'), Q('paragraph', 'A new member asks a question you do not know the answer to. What do you do?'), Q('select', 'Weekly availability', true, ['Under 5 hours', '5 to 10 hours', '10+ hours'])] },
+  { id: 'whitelist', name: 'Server Whitelist', kind: 'whitelist', blurb: 'Roleplay or game server whitelist request.', questions: [Q('short', 'Your in-game name'), Q('short', 'How did you find the server?'), Q('paragraph', 'Tell us about your character'), Q('paragraph', 'What does roleplay mean to you?'), Q('checkbox', 'I have read and agree to the server rules')] },
+  { id: 'partnership', name: 'Partnership Request', kind: 'partnership', blurb: 'Let other servers ask to partner with yours.', questions: [Q('short', 'Server name'), Q('short', 'Permanent invite link'), Q('number', 'Member count'), Q('paragraph', 'What does your community focus on?'), Q('paragraph', 'What would you like from a partnership?'), Q('short', 'Best way to contact you', false)] },
+  { id: 'department', name: 'Department Application', kind: 'staff', blurb: 'Police, EMS, fire and other roleplay departments.', questions: [Q('short', 'Character name'), Q('short', 'Your timezone'), Q('paragraph', 'Previous roleplay or department experience'), Q('paragraph', 'Why this department?'), Q('select', 'Weekly availability', true, ['Under 5 hours', '5 to 10 hours', '10+ hours'])] },
+  { id: 'appeal', name: 'Ban Appeal', kind: 'general', blurb: 'A fair, consistent way to handle appeals.', questions: [Q('short', 'Your Discord username'), Q('paragraph', 'Why were you banned?'), Q('paragraph', 'Why should we lift the ban?'), Q('paragraph', 'What will you do differently?')] }
+];
+function fromTemplate() {
+  const d = blank(), t = TEMPLATES.find((x) => x.id === new URLSearchParams(LOC.search).get('template'));
+  if (t) { d.title = t.name; d.kind = t.kind; d.description = t.blurb; d.questions = t.questions.map((q) => ({ ...q, id: uid(), options: [...q.options] })); }
+  return d;
+}
+const vTemplates = () => `<div class="phead"><h1>Templates</h1><p class="lead2">Start from a ready-made form and change anything you like. Each one opens in the builder.</p></div>
+  <div class="tpls">${TEMPLATES.map((t) => `<div class="tpl"><div class="row between"><h3>${esc(t.name)}</h3><span class="tag">${KINDS[t.kind]}</span></div><p>${esc(t.blurb)}</p><span class="sub">${t.questions.length} questions</span><a class="btn sm" href="/new?template=${t.id}">Use this template</a></div>`).join('')}</div>
+  <p class="sub" style="margin-top:1.5rem">Want to start empty? <a href="/new">Create a blank application</a>.</p>`;
+
+// ---------- dashboard ----------
+async function vDashApps() {
+  const [apps, subs, plan] = await Promise.all([
+    sb.from('applications').select('id,slug,title,kind,is_open,closes_at').order('created_at', { ascending: false }),
+    sb.from('submissions').select('application_id,status,created_at'),
+    sb.rpc('my_plan')]);
+  const p = plan.data || { name: 'Free', max_applications: 5, used: 0 };
+  const list = apps.data || [], ids = new Set(list.map((a) => a.id)), pend = {}, tot = {};
+  const days = 14, now = Date.now(), buckets = Array(days).fill(0);
+  let accepted = 0, decided = 0;
+  (subs.data || []).forEach((s) => {
+    if (!ids.has(s.application_id)) return;
+    tot[s.application_id] = (tot[s.application_id] || 0) + 1;
+    if (s.status === 'pending') pend[s.application_id] = (pend[s.application_id] || 0) + 1;
+    if (s.status === 'accepted') { accepted++; decided++; } else if (s.status === 'denied') decided++;
+    const d = Math.floor((now - new Date(s.created_at).getTime()) / 86400000);
+    if (d >= 0 && d < days) buckets[days - 1 - d]++;
+  });
+  const pendAll = Object.values(pend).reduce((a, b) => a + b, 0), totAll = Object.values(tot).reduce((a, b) => a + b, 0);
+  const full = p.max_applications !== null && p.used >= p.max_applications;
+  const pct = p.max_applications ? Math.min(100, Math.round(p.used / p.max_applications * 100)) : 6;
+  const max = Math.max(1, ...buckets);
+  const chart = `<div class="bars" role="img" aria-label="Submissions over the last 14 days">${buckets.map((n, i) => `<div title="${n} on ${new Date(now - (days - 1 - i) * 86400000).toLocaleDateString()}"><i style="height:${Math.round(n / max * 100)}%"></i></div>`).join('')}</div>`;
+  return connectBanner() + `<div class="dh"><div><h1 class="h2">Dashboard</h1><p class="sub">Your applications, who applied, and what is waiting.</p></div>
+      <div class="row"><a class="btn ghost" href="/templates">Templates</a>${full ? '<a class="btn" href="/pricing">Upgrade to add more</a>' : '<a class="btn" href="/new">New application</a>'}</div></div>
+    <div class="stats">
+      <div class="stat"><b>${p.used}<small> / ${p.max_applications ?? '∞'}</small></b><span>${esc(p.name)} plan applications</span><div class="meter"><i style="width:${pct}%"></i></div></div>
+      <div class="stat"><b>${pendAll}</b><span>Waiting for review</span></div>
+      <div class="stat"><b>${totAll}</b><span>Total submissions</span></div>
+      <div class="stat"><b>${decided ? Math.round(accepted / decided * 100) + '%' : '–'}</b><span>Acceptance rate</span></div></div>
+    <div class="card"><div class="row between"><h3>Submissions, last 14 days</h3><span class="sub">${buckets.reduce((a, b) => a + b, 0)} total</span></div><div style="margin-top:.8rem">${chart}</div></div>
+    ${list.length ? `<div class="apps">${list.map((a) => `<div class="app"><div class="row between"><h3>${esc(a.title)}</h3><span><span class="tag">${KINDS[a.kind] || a.kind}</span> <span class="tag ${a.is_open ? 'ok' : 'no'}">${a.is_open ? 'Open' : 'Closed'}</span></span></div>
+        <code class="lk">${esc(linkFor(a.slug))}</code>
+        <div class="sub">${tot[a.id] || 0} submission${(tot[a.id] || 0) === 1 ? '' : 's'}${pend[a.id] ? ` · <b style="color:var(--wait)">${pend[a.id]} pending</b>` : ''}</div>
+        <div class="row"><a class="btn sm" href="/inbox/${a.id}">Open inbox</a><button class="btn ghost sm" data-act="copy" data-slug="${esc(a.slug)}">Copy link</button><a class="btn ghost sm" href="/edit/${a.id}">Edit</a><button class="btn danger sm" data-act="del" data-id="${a.id}">Delete</button></div></div>`).join('')}</div>`
+      : '<div class="card empty"><h3>No applications yet</h3><p>Start from a template or build your own.</p><div class="row" style="justify-content:center"><a class="btn" href="/templates">Browse templates</a><a class="btn ghost" href="/new">Start blank</a></div></div>'}`;
+}
+
+// ---------- servers ----------
+const INVITE = (gid) => `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot%20applications.commands&permissions=268454912${gid ? `&guild_id=${encodeURIComponent(gid)}&disable_guild_select=true` : ''}`;
+function vServers() {
+  return connectBanner() + `<div class="dh"><div><h1 class="h2">Servers</h1><p class="sub">Servers where you have Manage Server permission.</p></div><a class="btn" href="${INVITE()}" target="_blank" rel="noopener">Add the bot to a server</a></div>
+    ${state.guilds.length ? `<div class="apps">${state.guilds.map((g) => `<div class="app"><div class="row between"><h3>${esc(g.name)}</h3><span class="tag ${g.bot_present ? 'ok' : 'no'}">${g.bot_present ? 'Bot added' : 'Bot not added'}</span></div>
+      <div class="row"><a class="btn sm" href="/servers/${esc(g.id)}">Manage</a>${g.bot_present ? '' : `<a class="btn ghost sm" href="${INVITE(g.id)}" target="_blank" rel="noopener">Add bot</a>`}</div></div>`).join('')}</div>`
+      : `<div class="card empty"><h3>No servers found</h3><p>Connect Discord, and make sure you have Manage Server permission on a server. If you just changed permissions, log out and back in to refresh the list.</p>${hasDiscord() ? '' : '<button class="btn" data-act="linkdiscord">Connect Discord</button>'}</div>`}`;
+}
+async function vServer(id) {
+  const g = state.guilds.find((x) => x.id === id);
+  if (!g) return '<div class="card empty"><h2>Server not found</h2><p>You may not have Manage Server permission, or your list is out of date.</p><a class="btn" href="/servers">Back to servers</a></div>';
+  const [cfg, apps, subs, mtr] = await Promise.all([
+    sb.from('guild_settings').select('config').eq('guild_id', id).maybeSingle(),
+    sb.from('applications').select('id,title,is_open').eq('guild_id', id),
+    sb.from('submissions').select('application_id').eq('status', 'pending'),
+    sb.rpc('my_metrics', { p_guild: id, p_days: 30 })]);
+  const mt = mtr.data && mtr.data.days ? mtr.data : null;
+  const roles = cfg.data?.config?.applications?.reviewer_role_ids || [];
+  const list = apps.data || [], pend = {};
+  (subs.data || []).forEach((s) => { pend[s.application_id] = (pend[s.application_id] || 0) + 1; });
+  return `<p class="crumb"><a href="/servers">Servers</a> / ${esc(g.name)}</p><div class="dh"><div><h1 class="h2">${esc(g.name)}</h1>
+      <p class="sub"><span class="tag ${g.bot_present ? 'ok' : 'no'}">${g.bot_present ? 'Bot added' : 'Bot not added'}</span></p></div>${g.bot_present ? '' : `<a class="btn" href="${INVITE(g.id)}" target="_blank" rel="noopener">Add the bot</a>`}</div>
+    ${mt ? `<div class="card"><div class="row between"><h3>Last 30 days</h3><a class="btn ghost sm" href="/dashboard/metrics?server=${esc(id)}&days=30">Full metrics</a></div><div class="stats" style="margin:1rem 0 0"><div class="stat"><b>${mt.window}</b><span>Submissions</span></div><div class="stat"><b>${mt.pending}</b><span>Pending now</span></div><div class="stat"><b>${rateOf(mt)}</b><span>Acceptance rate</span></div><div class="stat"><b>${dur(mt.avg_decision_hours)}</b><span>Average time to decide</span></div></div></div>` : ''}
+    <div class="card"><h3>Reviewer roles</h3><p class="sub" style="margin:.4rem 0 1rem">People with these roles can accept or deny applications in Discord. Anyone with Manage Server always can. Paste role IDs separated by commas (Discord: Server Settings, Roles, right click a role, Copy Role ID).</p>
+      <form id="sf" data-guild="${esc(id)}"><div class="f"><label for="roles">Role IDs</label><input type="text" id="roles" name="roles" value="${esc(roles.join(', '))}"></div>
+      <div class="row"><button class="btn" type="submit">Save</button><span id="svMsg" role="status"></span></div></form></div>
+    <div class="card"><h3>Linked applications</h3>${list.length ? list.map((a) => `<div class="idrow"><span>${esc(a.title)} <span class="tag ${a.is_open ? 'ok' : 'no'}">${a.is_open ? 'Open' : 'Closed'}</span>${pend[a.id] ? ` <b style="color:var(--wait)">${pend[a.id]} pending</b>` : ''}</span><a class="btn sm" href="/inbox/${a.id}">Inbox</a></div>`).join('') : '<p class="sub" style="margin-top:.5rem">None yet. Edit an application and choose this server under Discord actions.</p>'}</div>
+    <div class="card"><h3>Post the apply menu in Discord</h3><p class="sub" style="margin-top:.4rem">Run <b>/applications panel</b> in the channel where people should apply. The menu lists every open application linked to this server.</p></div>`;
+}
+async function saveServer(form) {
+  const gid = form.dataset.guild, msg = $('#svMsg');
+  const ids = form.roles.value.split(/[\s,]+/).filter(Boolean);
+  if (ids.length > 10 || ids.some((x) => !/^\d{15,25}$/.test(x))) { msg.className = 'err'; msg.textContent = 'Enter up to 10 role IDs (numbers copied from Discord), separated by commas.'; return; }
+  const { data } = await sb.from('guild_settings').select('config').eq('guild_id', gid).maybeSingle();
+  const config = data?.config || {};
+  config.applications = { ...(config.applications || {}), reviewer_role_ids: ids };
+  const { error } = await sb.from('guild_settings').upsert({ guild_id: gid, config, updated_by: state.session.user.id }, { onConflict: 'guild_id' });
+  msg.className = error ? 'err' : 'ok'; msg.textContent = error ? 'Could not save: ' + error.message : 'Saved';
+}
+
+// ---------- account ----------
+async function vAccount() {
+  const u = state.session.user, m = u.user_metadata || {};
+  const { data: plan } = await sb.rpc('my_plan');
+  const row = (name, on, act) => `<div class="idrow"><span><b>${name}</b> <span class="tag ${on ? 'ok' : ''}">${on ? 'Connected' : 'Not connected'}</span></span>${on ? '' : `<button class="btn ghost sm" data-act="${act}">Connect</button>`}</div>`;
+  return `<div class="phead"><h1>Account</h1></div>
+    <div class="card"><h3>Profile</h3><p class="sub" style="margin-top:.4rem">${esc(m.full_name || m.name || 'No name')}${u.email ? ' · ' + esc(u.email) : ''}<br>Member since ${esc(fmt(u.created_at))}</p></div>
+    <div class="card"><h3>Sign-in methods</h3>${row('Discord', hasDiscord(), 'linkdiscord')}${row('X', hasX(), 'linkx')}<div class="idrow"><span><b>Email</b> <span class="tag ${u.email ? 'ok' : ''}">${u.email ? esc(u.email) : 'Not added'}</span></span></div></div>
+    <div class="card"><h3>Plan</h3><p class="sub" style="margin:.4rem 0 .8rem">${esc(plan?.name || 'Free')}: ${plan?.used ?? 0} of ${plan?.max_applications ?? 'unlimited'} applications used.</p><a class="btn ghost sm" href="/pricing">Change plan</a></div>
+    <div class="card"><h3>Your data</h3><p class="sub" style="margin:.4rem 0 .8rem">Download a copy of your profile, the applications you created and the applications you submitted.</p><button class="btn ghost sm" data-act="export">Download my data</button></div>
+    <div class="card"><h3>Delete account</h3><p class="sub" style="margin:.4rem 0 .8rem">This permanently deletes your account, every application you created (with all submissions to them), and your own submissions. <b>Cancel any paid plan in PayPal first</b>, because deleting your account does not cancel billing. Type DELETE to confirm.</p>
+      <div class="row"><input type="text" id="delc" style="max-width:200px" autocomplete="off"><button class="btn danger" data-act="deleteacct">Delete my account</button></div></div>`;
+}
+async function exportData() {
+  const id = state.session.user.id;
+  const [p, apps, mine] = await Promise.all([sb.from('profiles').select('*').eq('id', id).maybeSingle(), sb.from('applications').select('*').eq('owner_id', id), sb.from('submissions').select('*').eq('applicant_id', id)]);
+  download(new Blob([JSON.stringify({ exported_at: new Date().toISOString(), account: { id, email: state.session.user.email || null, sign_in_methods: idents().map((i) => i.provider) }, profile: p.data, applications_you_created: apps.data, applications_you_submitted: mine.data }, null, 2)], { type: 'application/json' }), 'ks-applications-data.json');
+}
+async function deleteAccount() {
+  if (($('#delc')?.value || '').trim() !== 'DELETE') { toast('Type DELETE to confirm.', true); return; }
+  const { error } = await sb.rpc('delete_my_account');
+  if (error) { toast('Could not delete: ' + error.message, true); return; }
+  await sb.auth.signOut(); go('/'); toast('Your account was deleted.');
+}
+function csv() {
+  const { app, all } = window.__inbox || {};
+  if (!app) return;
+  const cell = (v) => { let t = Array.isArray(v) ? v.join('; ') : typeof v === 'boolean' ? (v ? 'Yes' : 'No') : String(v ?? ''); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const rows = [['Submitted', 'Applicant', 'Discord ID', 'Status', 'Reviewer note', ...app.questions.map((q) => q.label)]];
+  all.forEach((s) => rows.push([s.created_at, s.applicant_name, s.applicant_discord_id, s.status, s.reviewer_note, ...app.questions.map((q) => s.answers?.[q.id])]));
+  download(new Blob(['\ufeff' + rows.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), (app.slug || 'applications') + '.csv');
+}
+// ----- builder -----
+let draft = null;
+const blank = () => ({ id: null, title: '', description: '', kind: 'staff', guild_id: '', notify_channel_id: '', accepted_role_id: '', max_per_user: 1, closes_at: '', is_open: true, questions: [{ id: uid(), type: 'short', label: '', required: true, options: [] }] });
+const toLocalInput = (d) => { if (!d) return ''; const x = new Date(d); x.setMinutes(x.getMinutes() - x.getTimezoneOffset()); return x.toISOString().slice(0, 16); };
+
+function qHtml(q, i, n) {
+  const opts = q.type === 'select' || q.type === 'multiselect';
+  return `<div class="q" data-id="${esc(q.id)}"><div class="grid2">
+      <div class="f"><label>Question</label><input type="text" class="ql" value="${esc(q.label)}" maxlength="200"></div>
+      <div class="f"><label>Type</label><select class="qt" data-act="qtype">${Object.entries(QTYPES).map(([k, v]) => `<option value="${k}" ${q.type === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div></div>
+    ${opts ? `<div class="f"><label>Choices</label><textarea class="qo" placeholder="One choice per line">${esc((q.options || []).join('\n'))}</textarea></div>` : ''}
+    <div class="row between"><label class="chk"><input type="checkbox" class="qr" ${q.required ? 'checked' : ''}> Required</label>
+      <div class="row"><button type="button" class="btn ghost sm" data-act="up" data-i="${i}" ${i === 0 ? 'disabled' : ''}>Move up</button>
+        <button type="button" class="btn ghost sm" data-act="down" data-i="${i}" ${i === n - 1 ? 'disabled' : ''}>Move down</button>
+        <button type="button" class="btn danger sm" data-act="delq" data-i="${i}" ${n === 1 ? 'disabled' : ''}>Remove</button></div></div></div>`;
+}
+const renderQs = () => { $('#qs').innerHTML = draft.questions.map((q, i) => qHtml(q, i, draft.questions.length)).join(''); };
+function readForm() {
+  const f = $('#bf'); if (!f) return;
+  Object.assign(draft, { title: f.title.value, description: f.description.value, kind: f.kind.value, guild_id: f.guild_id.value, notify_channel_id: f.notify_channel_id.value.trim(), accepted_role_id: f.accepted_role_id.value.trim(), max_per_user: +f.max_per_user.value || 1, closes_at: f.closes_at.value, is_open: f.is_open.checked });
+  draft.questions = [...f.querySelectorAll('.q')].map((el) => ({ id: el.dataset.id, type: el.querySelector('.qt').value, label: el.querySelector('.ql').value.trim(), required: el.querySelector('.qr').checked, options: (el.querySelector('.qo')?.value || '').split('\n').map((s) => s.trim()).filter(Boolean) }));
+}
+
+async function vBuilder(id) {
+  if (!state.session) return vLanding();
+  if (id) {
+    const { data } = await sb.from('applications').select('*').eq('id', id).maybeSingle();
+    if (!data) return '<div class="card empty"><h3>Application not found</h3><a class="btn" href="/dashboard">Back to my applications</a></div>';
+    draft = { ...data, guild_id: data.guild_id || '', notify_channel_id: data.notify_channel_id || '', accepted_role_id: data.accepted_role_id || '', closes_at: toLocalInput(data.closes_at) };
+  } else draft = fromTemplate();
+  return `<p><a href="/dashboard">Back to my applications</a></p><h2 style="margin:.5rem 0 1.2rem">${id ? 'Edit application' : 'New application'}</h2>
+  <form id="bf">
+    <div class="card"><div class="f"><label for="title">Title</label><input type="text" id="title" name="title" maxlength="100" value="${esc(draft.title)}" required></div>
+      <div class="f"><label for="description">Description</label><textarea id="description" name="description" maxlength="2000">${esc(draft.description)}</textarea></div>
+      <div class="grid2"><div class="f"><label for="kind">Kind</label><select id="kind" name="kind">${Object.entries(KINDS).map(([k, v]) => `<option value="${k}" ${draft.kind === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="f"><label for="max_per_user">Submissions allowed per person</label><input type="number" id="max_per_user" name="max_per_user" min="1" max="10" value="${draft.max_per_user}"></div></div>
+      <div class="grid2"><div class="f"><label for="closes_at">Closes at</label><input type="datetime-local" id="closes_at" name="closes_at" value="${esc(draft.closes_at)}"><small>Leave empty to stay open until you close it.</small></div>
+        <label class="chk" style="align-self:center"><input type="checkbox" name="is_open" ${draft.is_open ? 'checked' : ''}> Accepting submissions</label></div></div>
+    <div class="card"><h3>Discord actions</h3><p class="sub" style="margin-bottom:1rem">Optional. Link a server and the bot posts new submissions and assigns a role on acceptance.</p>
+      <div class="f"><label for="guild_id">Server</label><select id="guild_id" name="guild_id"><option value="">None</option>${state.guilds.map((g) => `<option value="${esc(g.id)}" ${draft.guild_id === g.id ? 'selected' : ''}>${esc(g.name)}${g.bot_present ? '' : ' (bot not added)'}</option>`).join('')}</select><small>Only servers where you have Manage Server appear. The bot must be in the server: <a href="${esc(INVITE())}" target="_blank" rel="noopener">add the bot</a>. Log out and back in to refresh the list.</small></div>
+      <div class="grid2"><div class="f"><label for="notify_channel_id">Notification channel ID</label><input type="text" id="notify_channel_id" name="notify_channel_id" value="${esc(draft.notify_channel_id)}" inputmode="numeric"></div>
+        <div class="f"><label for="accepted_role_id">Role to give on acceptance (ID)</label><input type="text" id="accepted_role_id" name="accepted_role_id" value="${esc(draft.accepted_role_id)}" inputmode="numeric"></div></div></div>
+    <h3 style="margin:1.4rem 0 .4rem">Questions</h3><p class="sub" style="margin-bottom:.8rem">In Discord, questions appear in pop-up forms of 5 per page and each question label is cut at 45 characters, so keep the question text short.</p><div id="qs">${draft.questions.map((q, i) => qHtml(q, i, draft.questions.length)).join('')}</div>
+    <div class="row"><button type="button" class="btn ghost" data-act="addq">Add question</button></div>
+    <div class="row" style="margin-top:1.5rem"><button class="btn" type="submit" id="saveBtn">Save application</button><span id="saveMsg" class="err" role="status"></span></div>
+  </form>`;
+}
+
+async function saveDraft() {
+  readForm();
+  const msg = $('#saveMsg'), btn = $('#saveBtn'), snow = /^\d{15,25}$/;
+  const fail = (t) => { msg.textContent = t; };
+  if (!draft.title.trim()) return fail('Add a title.');
+  if (draft.notify_channel_id && !snow.test(draft.notify_channel_id)) return fail('Channel ID must be a number copied from Discord.');
+  if (draft.accepted_role_id && !snow.test(draft.accepted_role_id)) return fail('Role ID must be a number copied from Discord.');
+  if ((draft.notify_channel_id || draft.accepted_role_id) && !draft.guild_id) return fail('Choose a server for the Discord actions.');
+  for (const q of draft.questions) {
+    if (!q.label) return fail('Every question needs text.');
+    if ((q.type === 'select' || q.type === 'multiselect') && q.options.length < 2) return fail(`"${q.label}" needs at least two choices.`);
+  }
+  const row = { title: draft.title.trim(), description: draft.description.trim(), kind: draft.kind, guild_id: draft.guild_id || null, notify_channel_id: draft.notify_channel_id || null, accepted_role_id: draft.accepted_role_id || null, max_per_user: draft.max_per_user, closes_at: draft.closes_at ? new Date(draft.closes_at).toISOString() : null, is_open: draft.is_open, questions: draft.questions.map((q) => ({ ...q, options: (q.type === 'select' || q.type === 'multiselect') ? q.options : [] })) };
+  btn.disabled = true; msg.textContent = '';
+  const res = draft.id ? await sb.from('applications').update(row).eq('id', draft.id) : await sb.from('applications').insert({ ...row, owner_id: state.session.user.id });
+  btn.disabled = false;
+  if (res.error) return fail(res.error.message.includes('application_limit_reached') ? 'You have reached the application limit for your plan. Upgrade on the Plans page.' : 'Could not save: ' + res.error.message);
+  toast('Application saved'); go('/dashboard');
+}
+
+// ----- apply -----
+async function vApply(slug) {
+  const { data } = await sb.rpc('get_application_by_slug', { p_slug: slug });
+  const a = data?.[0];
+  if (!a) return '<div class="card empty"><h3>Application not found</h3><p>Check the link you were given.</p></div>';
+  const head = `<h2>${esc(a.title)}</h2><p class="sub" style="margin:.4rem 0 1.2rem"><span class="tag">${KINDS[a.kind] || ''}</span>${a.closes_at ? ' Closes ' + esc(fmt(a.closes_at)) : ''}</p><p style="white-space:pre-wrap;margin-bottom:1.5rem">${esc(a.description)}</p>`;
+  if (!a.accepting) return `<div style="max-width:640px">${head}<div class="card"><h3>This application is closed</h3><p class="sub">It is no longer accepting submissions.</p></div></div>`;
+  if (!state.session) return `<div style="max-width:640px">${head}<div class="card"><h3>Log in to apply</h3><p class="sub" style="margin:.4rem 0 1rem">Your Discord account is attached to your submission.</p><button class="btn" data-act="login">Log in</button></div></div>`;
+  if (!hasDiscord()) return `<div style="max-width:640px">${head}<div class="card"><h3>Connect Discord to apply</h3><p class="sub" style="margin:.4rem 0 1rem">Your Discord account is attached to your submission so reviewers know who you are.</p><button class="btn" data-act="linkdiscord">Connect Discord</button></div></div>`;
+  const field = (q) => {
+    const req = q.required ? ' (required)' : '', n = esc(q.id), lab = `<label for="${n}">${esc(q.label)}<span class="sub">${req}</span></label>`;
+    if (q.type === 'paragraph') return `<div class="f">${lab}<textarea id="${n}" name="${n}" maxlength="4000"></textarea></div>`;
+    if (q.type === 'number') return `<div class="f">${lab}<input type="number" id="${n}" name="${n}"></div>`;
+    if (q.type === 'select') return `<div class="f">${lab}<select id="${n}" name="${n}"><option value="">Choose</option>${(q.options || []).map((o) => `<option>${esc(o)}</option>`).join('')}</select></div>`;
+    if (q.type === 'multiselect') return `<div class="f"><span class="lbl">${esc(q.label)}<span class="sub">${req}</span></span>${(q.options || []).map((o) => `<label class="chk"><input type="checkbox" name="${n}" value="${esc(o)}"> ${esc(o)}</label>`).join('')}</div>`;
+    if (q.type === 'checkbox') return `<div class="f"><label class="chk"><input type="checkbox" name="${n}"> ${esc(q.label)}<span class="sub">${req}</span></label></div>`;
+    return `<div class="f">${lab}<input type="text" id="${n}" name="${n}" maxlength="500"></div>`;
+  };
+  window.__app = a;
+  return `<div style="max-width:640px">${head}<form id="af" data-slug="${esc(slug)}" class="card">${a.questions.map(field).join('')}
+    <div class="row"><button class="btn" type="submit" id="subBtn">Submit application</button><span id="subMsg" class="err" role="status"></span></div></form></div>`;
+}
+async function submitApply(form) {
+  const a = window.__app, ans = {}, msg = $('#subMsg'), btn = $('#subBtn');
+  a.questions.forEach((q) => {
+    if (q.type === 'multiselect') ans[q.id] = [...form.querySelectorAll(`[name="${q.id}"]:checked`)].map((e) => e.value);
+    else if (q.type === 'checkbox') ans[q.id] = form.querySelector(`[name="${q.id}"]`).checked;
+    else if (q.type === 'number') { const v = form.elements[q.id].value; ans[q.id] = v === '' ? '' : Number(v); }
+    else ans[q.id] = form.elements[q.id].value.trim();
+  });
+  btn.disabled = true; msg.textContent = '';
+  const { error } = await sb.rpc('submit_application', { p_slug: form.dataset.slug, p_answers: ans });
+  btn.disabled = false;
+  if (error) {
+    const m = error.message;
+    msg.textContent = m.includes('already_applied') ? 'You have already applied to this.' : m.includes('application_closed') ? 'This application just closed.' : m.includes('missing_answer') ? 'Answer the required question: ' + m.split('missing_answer:')[1] : m.includes('no_discord_account') ? 'Connect your Discord account to apply.' : 'Could not submit: ' + m;
+    return;
+  }
+  form.outerHTML = '<div class="card"><span class="stamp pop s-pending">Submitted</span><h3 style="margin-top:.8rem">Application sent</h3><p class="sub">You will get a Discord message when it is reviewed.</p></div>';
+}
+
+// ----- inbox -----
+let inboxFilter = 'pending';
+async function vInbox(id) {
+  if (!state.session) return vLanding();
+  const [app, subs] = await Promise.all([
+    sb.from('applications').select('id,title,slug,questions').eq('id', id).maybeSingle(),
+    sb.from('submissions').select('*').eq('application_id', id).order('created_at', { ascending: false })]);
+  if (!app.data) return '<div class="card empty"><h3>Application not found</h3><a class="btn" href="/dashboard">Back to my applications</a></div>';
+  const all = subs.data || [], shown = inboxFilter === 'all' ? all : all.filter((s) => s.status === inboxFilter);
+  window.__inbox = { app: app.data, all };
+  const fa = (v) => Array.isArray(v) ? (v.join(', ') || 'No answer') : typeof v === 'boolean' ? (v ? 'Yes' : 'No') : (v === '' || v == null ? 'No answer' : String(v));
+  const cnt = (s) => s === 'all' ? all.length : all.filter((x) => x.status === s).length;
+  return `<p><a href="/dashboard">Back to my applications</a></p><div class="row between" style="margin:.5rem 0 1rem"><h2>${esc(app.data.title)}</h2>
+      <div class="row"><button class="btn ghost sm" data-act="csv">Export CSV</button><button class="btn ghost sm" data-act="copy" data-slug="${esc(app.data.slug)}">Copy share link</button></div></div>
+    <div class="row" style="margin-bottom:1rem">${['pending', 'accepted', 'denied', 'all'].map((s) => `<button class="btn ${inboxFilter === s ? '' : 'ghost'} sm" data-act="filter" data-v="${s}">${s[0].toUpperCase() + s.slice(1)} (${cnt(s)})</button>`).join('')}</div>
+    ${shown.length ? shown.map((s) => `<div class="card"><div class="row between"><div><h3>${esc(s.applicant_name || 'Unknown')}</h3><span class="sub">Discord ID ${esc(s.applicant_discord_id)} · ${esc(fmt(s.created_at))}</span></div><span class="stamp s-${s.status}">${s.status[0].toUpperCase() + s.status.slice(1)}</span></div>
+      ${app.data.questions.map((q) => `<div class="ans"><b>${esc(q.label)}</b><span>${esc(fa(s.answers?.[q.id]))}</span></div>`).join('')}
+      ${s.status === 'pending' ? `<div class="f" style="margin-top:1rem"><label for="n-${s.id}">Note to applicant (optional)</label><textarea id="n-${s.id}" maxlength="2000"></textarea></div>
+        <div class="row"><button class="btn sm" data-act="review" data-id="${s.id}" data-v="accepted">Accept</button><button class="btn danger sm" data-act="review" data-id="${s.id}" data-v="denied">Deny</button></div>`
+        : s.reviewer_note ? `<p class="sub" style="margin-top:.8rem">Note: ${esc(s.reviewer_note)}</p>` : ''}</div>`).join('')
+      : '<div class="card empty"><h3>Nothing here</h3><p>No submissions match this view.</p></div>'}`;
+}
+
+
+
+// ---------- pages ----------
+const P = (title, html) => `<div class="phead"><h1>${title}</h1></div>${html}`;
+const f = (n, h, p) => `<div class="feat"><div class="n">${n}</div><h3>${h}</h3><p>${p}</p></div>`;
+const PAGES = {
+  features: ['Features', 'Form builder, share links, review inbox, Discord apply panels and automatic follow-up.', () => `<div class="phead"><h1>Features</h1><p class="lead2">Everything you need to run intake for a Discord community, in one place.</p></div><div class="feats">
+    ${f('01', 'Form builder', 'Six question types: short answer, paragraph, number, dropdown, multiple choice and yes or no. Mark questions required and reorder them in a click.')}
+    ${f('02', 'One link per application', 'Every application gets its own link at ' + location.host + '/apply/code. Post it anywhere. Close it any time, set a deadline, and limit how often one person can apply.')}
+    ${f('03', 'Verified applicants', 'Applicants log in and connect Discord first, so every submission is tied to a real account. Duplicate applications are blocked for you.')}
+    ${f('04', 'Review inbox', 'See every answer in one place, filter by status, accept or deny with a note, and export everything to CSV.')}
+    ${f('05', 'Apply inside Discord', 'Post a menu in any channel. People pick an application and fill it in through pop-up forms, without leaving Discord.')}
+    ${f('06', 'Review inside Discord', 'New submissions land in your staff channel with Accept and Deny buttons. Reviewer roles are pinged and decisions update the message.')}
+    ${f('07', 'Automatic follow-up', 'On a decision the applicant gets a direct message with your note, and accepted applicants are given the role you chose.')}
+    ${f('08', 'Templates', 'Start from ready-made forms for moderators, helpers, whitelists, partnerships, departments and ban appeals.')}
+    ${f('09', 'Server management', 'Link applications to your servers, see whether the bot is added, and choose which roles can review.')}
+    ${f('10', 'Dashboard and activity', 'See pending reviews, total submissions, acceptance rate and a 14 day activity chart.')}
+    ${f('11', 'Your data, your control', 'Download everything you have stored, or delete your account, from the account page.')}
+    ${f('12', 'Free to start', 'Five applications free with unlimited submissions. Paid plans raise how many applications you can run.')}</div>
+    <div class="band"><div><h2>See it in action</h2><p class="sub" style="margin-top:.4rem">Create your first application in minutes.</p></div><button class="btn lg" data-act="login">Start free</button></div>`],
+  'how-it-works': ['How it works', 'From creating a form to the applicant getting their role, in four steps.', () => `<div class="phead"><h1>How it works</h1><p class="lead2">Four steps from an empty form to a finished decision.</p></div><div class="feats steplist">
+    ${f('', 'Create the application', 'Pick a template or start blank. Add your questions, a description, a deadline and how many times one person can apply.')}
+    ${f('', 'Connect your server', 'Add the bot, choose your server in the application, and pick the staff channel and the role accepted people receive.')}
+    ${f('', 'Share it', 'Copy the link, or run /applications panel in Discord to post an apply menu. Applicants log in with Discord and answer the questions.')}
+    ${f('', 'Review and decide', 'Reviewers accept or deny from the website or from the buttons in your staff channel. The applicant is messaged and the role is assigned.')}</div>
+    <div class="card" style="margin-top:1.5rem"><h3>What applicants see</h3><p class="sub" style="margin-top:.4rem">A clean form with your title and description, clear required marks, and a confirmation when they submit. They never see other people's answers.</p></div>
+    <div class="card"><h3>What staff see</h3><p class="sub" style="margin-top:.4rem">Every answer, who applied, when, and the status. In Discord the same information arrives as a message with Accept and Deny buttons.</p></div>`],
+  'use-cases': ['Use cases', 'Staff applications, partnerships, whitelists, department intake and ban appeals.', () => `<div class="phead"><h1>Use cases</h1><p class="lead2">One tool, many kinds of intake.</p></div><div class="feats">
+    ${f('Staff', 'Moderator and helper applications', 'Ask about experience, availability and judgment. Review every candidate side by side and give the role the moment you accept.')}
+    ${f('Partnerships', 'Server partnership requests', 'Collect the invite, member count and what each side wants, so you only talk to servers that fit.')}
+    ${f('Whitelist', 'Game and roleplay whitelists', 'Ask for in-game names and character backstories and have everyone agree to the rules before they join.')}
+    ${f('Departments', 'Roleplay departments', 'Police, EMS, fire and more, each with its own questions, role and review channel.')}
+    ${f('Appeals', 'Ban appeals', 'Give banned members one consistent place to appeal, and keep a record of every decision.')}
+    ${f('Events', 'Event signups', 'Collect hosts, entrants or volunteers with deadlines and limits.')}</div>
+    <p class="sub" style="margin-top:1.5rem">Every one of these has a starting point in <a href="/templates">Templates</a>.</p>`],
+  templates: ['Templates', 'Ready-made application forms for moderators, whitelists, partnerships and more.', () => vTemplates()],
+  pricing: ['Pricing', 'Start free with five applications. Upgrade for more.', async () => (await vPlans()) + `<div class="prose" style="margin-top:2rem"><h2>Billing</h2><ul><li>Plans are billed through PayPal as a recurring subscription.</li><li>Cancel any time in PayPal. Your plan stays active until the end of the period you paid for.</li><li>If you move to a lower plan, applications you already have are kept, but you cannot create new ones above the limit.</li><li>See the <a href="/terms">Terms of Service</a> for details.</li></ul></div>`],
+  docs: ['Docs', 'Set up KS Applications: add the bot, link a server, post an apply menu, and set reviewer roles.', () => `<div class="phead"><h1>Docs</h1><p class="lead2">Get from zero to a working application in a few minutes.</p></div><div class="prose">
+    <h2>1. Log in and connect Discord</h2><p>Log in with Discord, X or email. If you used X or email, open your <a href="/account">account</a> and connect Discord. It is needed to list your servers and so the bot can message people.</p>
+    <h2>2. Add the bot to your server</h2><p>Open <a href="/servers">Servers</a> and choose Add the bot. The bot asks for View Channels, Send Messages, Embed Links and Manage Roles. It does not need any privileged intents.</p>
+    <p><strong>Important:</strong> in Server Settings, Roles, drag the bot's role above any role it should hand out. Discord does not let a bot give roles that sit above its own.</p>
+    <h2>3. Create an application</h2><p>Start from a <a href="/templates">template</a> or a blank form. Under Discord actions choose your server, the channel where new submissions should appear, and the role to give accepted applicants. Channel and role IDs are numbers you can copy from Discord with Developer Mode on.</p>
+    <h2>4. Share it</h2><p>Copy the application link from your dashboard, or run <strong>/applications panel</strong> in a channel to post an apply menu. The menu lists every open application linked to that server.</p>
+    <h2>5. Review</h2><p>Reviewers can use the inbox on the website or the Accept and Deny buttons in the staff channel. Anyone with Manage Server can review. Add more roles under <a href="/servers">Servers</a> or with <strong>/applications reviewers add</strong>.</p>
+    <h2>Applying in Discord</h2><ul><li>Pop-up forms hold 5 questions each, so longer applications continue on more pages.</li><li>Question labels are cut at 45 characters in Discord, so keep them short.</li><li>For dropdown and multiple choice questions people type one of the listed choices, separated by commas for multiple. Yes or no questions take yes or no.</li></ul>
+    <h2>Troubleshooting</h2><ul><li><strong>Accepted people did not get the role.</strong> Move the bot's role above the role it should assign and check it has Manage Roles.</li><li><strong>An applicant did not get a message.</strong> Their Discord privacy settings may block direct messages from server members.</li><li><strong>My server is missing from the list.</strong> You need Manage Server on it. Log out and back in to refresh.</li><li><strong>Chrome shows no padlock.</strong> Chrome replaced the padlock with a settings icon in 2023. Click the icon left of the address and it says Connection is secure.</li></ul></div>`],
+  faq: ['FAQ', 'Answers about accounts, pricing, the bot and your data.', () => { const q = [
+    ['Do applicants need Discord?', 'Yes. Applicants log in and connect their Discord account so every submission is tied to a real person and the bot can message them with the decision.'],
+    ['Is it free?', 'Yes to start. The Free plan covers 5 applications with unlimited submissions. Paid plans raise how many applications you can run.'],
+    ['Can I log in with X or email?', 'Yes. You can sign up with Discord, X or email. Connect Discord on your account page to link servers or to apply.'],
+    ['What does the bot do?', 'It posts the apply menu, shows submissions in your staff channel with Accept and Deny buttons, sends the applicant their result and assigns the accepted role. The rules and data live on the website.'],
+    ['Who can review applications?', 'The person who owns the application, anyone with Manage Server in the linked server, and any reviewer roles you add.'],
+    ['Can I close an application?', 'Any time. You can also set a close date and limit how many times one person can apply.'],
+    ['Can I export submissions?', 'Yes. Open an application inbox and choose Export CSV.'],
+    ['How do I cancel a paid plan?', 'In PayPal. Your plan stays active until the end of the period you paid for.'],
+    ['How do I delete my data?', 'Open your account page. You can download a copy of your data and delete your account there.'],
+    ['Who makes this?', STUDIO + ', a division of ' + CO + '.']]; return `<div class="phead"><h1>FAQ</h1></div><div style="max-width:760px">${q.map(([a, b]) => `<details><summary>${a}</summary><p>${b}</p></details>`).join('')}</div>`; }],
+  about: ['About', 'KS Applications is made by Kurrasch Systems Studios, a division of Kurrasch Gaming Merch Store LLC.', () => `<div class="phead"><h1>About</h1></div><div class="prose"><p>KS Applications gives Discord communities one reliable place to run applications, partnerships and whitelists. It is the rebuilt version of a bot we have run for years, now with a website that owns every rule and a Discord bot that does the Discord work.</p><p>It is made by <strong>${STUDIO}</strong>, a division of <strong>${CO}</strong>. ${STUDIO} builds and sells game server resources, Discord bots and related tools.</p><p>Questions or feedback? Use the <a href="/contact">contact page</a>.</p></div>`],
+  contact: ['Contact', 'Contact Kurrasch Systems Studios about KS Applications.', () => `<div class="phead"><h1>Contact</h1><p class="lead2">Questions, bug reports, privacy requests and feedback.</p></div><div style="max-width:560px">${SUPPORT_EMAIL ? `<p class="sub" style="margin-bottom:1rem">You can also email <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>.</p>` : ''}${state.session ? `<form id="cf" class="card"><div class="f"><label for="subject">Subject</label><input type="text" id="subject" name="subject" maxlength="120"></div><div class="f"><label for="message">Message</label><textarea id="message" name="message" maxlength="4000"></textarea></div><div class="row"><button class="btn" type="submit">Send message</button><span id="cfMsg" role="status"></span></div></form>` : '<div class="card empty"><h3>Log in to send a message</h3><p>Messages are tied to your account so we can reply.</p><button class="btn" data-act="login">Log in</button></div>'}</div>`],
+  terms: ['Terms of Service', 'The rules for using KS Applications.', () => `<div class="phead"><h1>Terms of Service</h1><p class="sub">Last updated ${UPDATED}</p></div><div class="prose">
+    <h2>1. Who we are and what this covers</h2><p>KS Applications (the "Service") is operated by ${CO} through its division ${STUDIO} ("we", "us"). By creating an account or using the Service you agree to these Terms and to our <a href="/privacy">Privacy Policy</a>. If you do not agree, do not use the Service.</p>
+    <h2>2. Eligibility</h2><p>You must be at least 13 years old, or older if your country requires a higher age to use online services, and you must be allowed to use Discord. If you use the Service for an organization, you confirm you can bind it to these Terms.</p>
+    <h2>3. Accounts</h2><p>You can sign in with Discord, X or email. You are responsible for your account and for what happens under it. Keep your sign-in methods secure and tell us if you think your account was accessed without permission.</p>
+    <h2>4. What the Service does</h2><p>The Service lets people create application forms, collect submissions, review them, and have a Discord bot post messages, send direct messages and assign roles. The bot acts only in servers where a person with the right permissions has added it.</p>
+    <h2>5. Applications you create</h2><ul><li>You are responsible for your forms, the questions you ask, and how you use the answers.</li><li>You must have a lawful reason to collect the information you ask for and follow the laws that apply to you.</li><li>Do not ask applicants for passwords, payment card numbers, government ID numbers or other highly sensitive information.</li><li>You decide whether to accept or deny applicants. We do not make or review those decisions.</li></ul>
+    <h2>6. Applying to an application</h2><p>When you submit an application, your answers, your Discord account details and the time you applied are visible to the application owner and the people who review it, and may be used to contact you. Their handling of your information is their responsibility.</p>
+    <h2>7. Acceptable use</h2><p>Do not use the Service to break the law, harass or discriminate, collect information deceptively, send spam, infringe others' rights, interfere with or overload the Service, attempt to access data that is not yours, or work around plan limits. You must follow Discord's and X's terms and policies when using those services through ours. See also the <a href="/acceptable-use">Acceptable Use Policy</a>.</p>
+    <h2>8. The Discord bot</h2><p>You are responsible for the permissions you grant the bot and for your server's role setup. The bot cannot assign roles above its own highest role. We are not responsible for actions taken in your server by people you authorize.</p>
+    <h2>9. Plans, billing and cancellation</h2><p>The Free plan lets you create a limited number of applications. Paid plans raise that limit and are billed as recurring subscriptions through PayPal. Subscriptions renew until cancelled. You can cancel at any time in PayPal and the plan stays active until the end of the period you paid for. Amounts already paid are not refunded except where the law requires. See the <a href="/refunds">Refund and Cancellation Policy</a>. Lowering your plan does not delete existing applications, but you cannot create new ones above the limit. We may change prices or limits for future billing periods with notice.</p>
+    <h2>10. Third-party services</h2><p>The Service relies on Discord, X, PayPal and infrastructure providers. Their terms and privacy policies apply to your use of them, and outages on their side can affect the Service.</p>
+    <h2>11. Your content and our property</h2><p>You keep ownership of the content you create and submit. You give us permission to store, process and display it as needed to run the Service for you. The Service, its software, design and branding belong to ${CO} and its licensors, and you may not copy or resell them.</p>
+    <h2>12. Suspension and termination</h2><p>You can stop using the Service and delete your account at any time from your account page. We may suspend or end access if you break these Terms, create risk or legal exposure, or if we discontinue the Service.</p>
+    <h2>13. Disclaimers</h2><p>The Service is provided "as is" and "as available" without warranties of any kind, to the fullest extent the law allows. We do not guarantee it will be uninterrupted, error free or that messages and roles will always be delivered.</p>
+    <h2>14. Limitation of liability</h2><p>To the fullest extent the law allows, ${CO} and ${STUDIO} are not liable for indirect, incidental, special or consequential damages, or for lost profits or data. Our total liability for any claim relating to the Service is limited to the amount you paid us in the 12 months before the claim, or $50 if you paid nothing.</p>
+    <h2>15. Changes to these Terms</h2><p>We may update these Terms. If a change is material we will give notice on the site. Continuing to use the Service after a change means you accept it.</p>
+    <h2>16. Governing law</h2><p>These Terms are governed by the laws of the State of Minnesota, United States, without regard to conflict of law rules. Courts located in Minnesota have jurisdiction over disputes, unless the law where you live requires otherwise.</p>
+    <h2>17. Contact</h2><p>Questions about these Terms: use the <a href="/contact">contact page</a>, or chat with our team from the chat button when support is online.</p></div>`],
+  privacy: ['Privacy Policy', 'What KS Applications collects, why, who sees it, and how to control it.', () => `<div class="phead"><h1>Privacy Policy</h1><p class="sub">Last updated ${UPDATED}</p></div><div class="prose">
+    <h2>1. Who we are</h2><p>KS Applications is operated by ${CO} through its division ${STUDIO}. This policy explains what personal information the Service collects and how it is used.</p>
+    <h2>2. What we collect</h2><ul><li><strong>Account details.</strong> From Discord: your Discord user ID, username, display name, avatar and, if shared, your email. From X: your X user ID, name, handle, avatar and, if shared, your email. From email sign-in: your email address.</li><li><strong>Your servers.</strong> When you log in with Discord we read the list of servers you belong to, and store only the servers where you have Manage Server permission (server ID, name and icon).</li><li><strong>Applications and submissions.</strong> The forms you create, the answers people submit, the time, the status, and reviewer notes and decisions.</li><li><strong>Bot activity.</strong> Records of messages, direct messages and role changes the bot was asked to make, and any errors.</li><li><strong>Billing.</strong> Your PayPal subscription ID, plan, status and period end. We never receive or store your card or bank details. PayPal handles payment.</li><li><strong>Support conversations.</strong> Live chat transcripts, and the name, email address and message you send through the chat widget or the contact page.</li><li><strong>Technical data.</strong> IP address, browser type and request logs kept by our hosting and database providers for security and reliability.</li></ul>
+    <h2>3. How we use it</h2><p>To run the Service: sign you in, show your servers and applications, deliver submissions to reviewers, send decision messages and assign roles, apply plan limits, process subscriptions, answer support requests, prevent abuse, and keep the Service secure and working.</p>
+    <h2>4. Who sees it</h2><ul><li><strong>Application owners and reviewers</strong> see the submissions made to their applications, including the applicant's Discord details.</li><li><strong>Our team</strong> can see your account details, the applications you created and your support conversations when needed to help you or keep the Service safe. Administrator actions are logged.</li><li><strong>Service providers</strong> that run the Service for us: Supabase (database, authentication and server functions), our web host, Discord and X (sign-in and message delivery), PayPal (payments), and content delivery for fonts and scripts (Google Fonts, jsDelivr, PayPal).</li><li><strong>Legal and safety.</strong> We may disclose information if the law requires it or to protect people and the Service, and as part of a sale or reorganization of the business.</li></ul><p>We do not sell personal information and we do not use it for advertising.</p>
+    <h2>5. Cookies and local storage</h2><p>We use browser storage to keep you signed in and to remember where to send you after login. We do not use advertising or cross-site tracking cookies. Details are in the <a href="/cookies">Cookie Policy</a>. Third-party scripts we load, such as PayPal on the pricing page, may set their own cookies under their own policies.</p>
+    <h2>6. How long we keep data</h2><p>We keep your information while your account is active. If you delete your account, your profile, the applications you created with their submissions, and the submissions you made are deleted. Backups and provider logs may persist for a limited time, and PayPal keeps its own records. Application owners may keep copies of information they already received.</p>
+    <h2>7. Your choices and rights</h2><p>You can download a copy of your data and delete your account from your <a href="/account">account page</a>. Depending on where you live you may have rights to access, correct, delete or restrict the use of your information. To make a request, or to ask about an application you submitted, use the <a href="/contact">contact page</a>. For data inside a specific application, the application owner decides how it is used.</p>
+    <h2>8. Security</h2><p>We use access controls, encryption in transit and restricted database permissions. No system is perfectly secure, so we cannot guarantee absolute security.</p>
+    <h2>9. Children</h2><p>The Service is not for children under 13, or under the minimum age required in your country. If you believe a child has given us personal information, contact us and we will delete it.</p>
+    <h2>10. International use</h2><p>Information may be processed in the United States and other countries where our providers operate.</p>
+    <h2>11. Changes</h2><p>We may update this policy. If a change is material we will give notice on the site. The date at the top shows when it was last changed.</p>
+    <h2>12. Contact</h2><p>Questions about privacy: use the <a href="/contact">contact page</a>.</p></div>`]
+};
+// (home page defined below)
+// ----- plans -----
+async function vPlans() {
+  const [t, pp, plan] = await Promise.all([
+    sb.from('plan_tiers').select('id,name,max_applications,sort').order('sort'),
+    sb.from('paypal_plans').select('paypal_plan_id,tier_id,months,label,price_display').eq('active', true).order('months'),
+    state.session ? sb.rpc('my_plan') : Promise.resolve({ data: null })]);
+  const cur = plan.data?.tier, buy = pp.data || [];
+  window.__pp = buy;
+  const perks = ['Unlimited submissions', 'Share links and verified applicants', 'Review inbox with notes', 'Bot DMs, roles and channel posts'];
+  return `<div class="dh"><div><h1 class="h2">Plans</h1><p class="sub">Open to everyone, live today. Start free and upgrade when you need more applications.</p></div></div>
+    <div class="tiers">${(t.data || []).map((r) => { const opts = buy.filter((p) => p.tier_id === r.id);
+      return `<div class="tier ${r.id === cur ? 'cur' : ''}"><div class="row between"><h3>${esc(r.name)}</h3>${r.id === cur ? '<span class="tag ok">Your plan</span>' : ''}</div>
+        <div class="big">${r.max_applications ?? '∞'}<small> applications</small></div>
+        <ul class="perks">${perks.map((x) => `<li>${x}</li>`).join('')}</ul>
+        ${r.sort === 0 ? '<span class="sub">Free forever</span>' : !opts.length ? '' : state.session ? opts.map((p) => `<div style="margin-top:.6rem"><b>${esc(p.label || p.months + ' months')}</b> <span class="sub">${esc(p.price_display || '')}</span><div id="pp-${esc(p.paypal_plan_id)}" style="margin-top:.5rem"></div></div>`).join('') : '<button class="btn" data-act="login">Log in to upgrade</button>'}</div>`; }).join('')}</div>
+    ${state.session ? '<p class="sub" style="margin-top:1.2rem">Already subscribed? Cancel your current subscription in PayPal before starting another, or you will be billed for both. Your limit changes as soon as PayPal confirms the new plan.</p>' : ''}`;
+}
+let ppLoading = null;
+function loadPayPal() {
+  if (window.paypal) return Promise.resolve();
+  if (ppLoading) return ppLoading;
+  ppLoading = new Promise((res, rej) => {
+    const el = document.createElement('script');
+    el.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription`;
+    el.onload = res; el.onerror = () => { ppLoading = null; rej(new Error('PayPal failed to load')); };
+    document.head.appendChild(el);
+  });
+  return ppLoading;
+}
+async function mountPlans() {
+  if (!state.session || !window.__pp?.length) return;
+  try { await loadPayPal(); } catch (e) { toast('PayPal could not load. Disable content blockers and refresh.', true); return; }
+  window.__pp.forEach((p) => {
+    const box = document.getElementById('pp-' + p.paypal_plan_id); if (!box) return;
+    paypal.Buttons({
+      style: { layout: 'vertical', label: 'subscribe' },
+      createSubscription: (d, a) => a.subscription.create({ plan_id: p.paypal_plan_id, custom_id: state.session.user.id }),
+      onApprove: async () => {
+        toast('Payment received. Your plan updates as soon as PayPal confirms it.');
+        for (let i = 0; i < 12; i++) { await new Promise((r) => setTimeout(r, 5000)); const { data } = await sb.rpc('my_plan'); if (data && data.tier !== 'free') { toast('Your plan is now ' + data.name); render(); return; } }
+      },
+      onError: () => toast('PayPal reported an error. You were not charged.', true)
+    }).render(box);
+  });
+}
+
+
+
+// ---------- helpers ----------
+const cut = (s, n) => { s = String(s ?? ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+const timeShort = (d) => new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const beep = () => { try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = 0.05; o.start(); o.stop(c.currentTime + 0.15); } catch (e) { /* no audio */ } };
+
+async function loadBanner() {
+  const el = $('#banner'); if (!el) return;
+  const { data } = await sb.from('site_settings').select('value').eq('key', 'announcement').maybeSingle();
+  const a = data?.value;
+  el.innerHTML = a && a.on && a.text && store.get('banner') !== a.text ? `<div class="ban ${a.level === 'warn' ? 'warn' : ''}">${esc(a.text)}<button class="ban-x" data-act="banx" data-t="${esc(a.text)}" aria-label="Dismiss">×</button></div>` : '';
+}
+
+// ---------- live chat widget ----------
+const CW = { open: false, online: false, s: null, msgs: [], chan: null, poll: null, unread: 0 };
+function cwMount() {
+  const el = $('#cw'); if (!el) return;
+  el.innerHTML = '<button class="cw-btn" id="cwb" data-act="cwtoggle" aria-label="Open support chat">Chat with us</button><div class="cw-panel" id="cwp" hidden role="dialog" aria-label="Support chat"></div>';
+}
+function cwBadge() { const b = $('#cwb'); if (b) b.textContent = CW.unread ? `Chat with us (${CW.unread})` : 'Chat with us'; }
+function cwReset() { if (CW.chan) { sb.removeChannel(CW.chan); CW.chan = null; } CW.s = null; CW.msgs = []; CW.unread = 0; cwBadge(); if (CW.open) cwRender(); }
+async function cwRefreshOnline() { const { data } = await sb.rpc('support_is_online'); CW.online = !!data; }
+async function cwLoadSession() {
+  if (CW.chan) { sb.removeChannel(CW.chan); CW.chan = null; }
+  CW.s = null; CW.msgs = [];
+  if (!state.session) return;
+  const { data: sess } = await sb.from('chat_sessions').select('*').eq('user_id', state.session.user.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+  CW.s = sess || null;
+  if (sess) {
+    const { data: m } = await sb.from('chat_messages').select('*').eq('session_id', sess.id).order('created_at');
+    CW.msgs = m || [];
+    if (sess.status === 'open') cwSubscribe(sess.id);
+  }
+}
+function cwSubscribe(id) {
+  CW.chan = sb.channel('cw-' + id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `session_id=eq.${id}` }, (p) => {
+      if (CW.msgs.some((x) => x.id === p.new.id)) return;
+      CW.msgs.push(p.new);
+      if (!CW.open && p.new.sender === 'admin') { CW.unread++; cwBadge(); beep(); }
+      cwList();
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_sessions', filter: `id=eq.${id}` }, (p) => {
+      const changed = !CW.s || CW.s.status !== p.new.status;
+      CW.s = p.new;
+      if (changed) { cwRender(); }
+    })
+    .subscribe();
+}
+function cwRender() {
+  const p = $('#cwp'); if (!p) return;
+  const u = state.session?.user, m = u?.user_metadata || {}, open = CW.s?.status === 'open';
+  const nm = esc(m.full_name || m.name || '');
+  const head = `<div class="cw-h"><div><b>Support</b><div class="sub" style="font-size:.85rem"><span class="dot2 ${CW.online ? 'on' : ''}"></span>${CW.online ? 'Online now' : 'Offline, leave a message'}</div></div><button class="btn ghost sm" data-act="cwtoggle" aria-label="Close chat">Close</button></div>`;
+  let body;
+  if (open) {
+    body = `<div class="msgs" id="cwl"></div><form id="cwm" class="cw-f"><textarea name="b" rows="2" maxlength="2000" placeholder="Type a message"></textarea><div class="row between"><button type="button" class="btn ghost sm" data-act="cwend">End chat</button><button class="btn sm" type="submit">Send</button></div></form>`;
+  } else if (CW.online && u) {
+    body = `<form id="cws" class="cw-f">${CW.s ? '<p class="sub">Your last chat has ended.</p>' : ''}<p class="sub">Ask us anything. A team member will reply right here.</p><input type="text" name="n" placeholder="Your name" value="${nm}" maxlength="60"><textarea name="b" rows="3" maxlength="2000" placeholder="How can we help?"></textarea><button class="btn" type="submit">Start chat</button><span id="cwe" class="err" role="status"></span></form>`;
+  } else {
+    const intro = CW.online && !u
+      ? '<div class="cw-f"><p class="sub">Log in to chat live with the team.</p><button class="btn" data-act="login">Log in to chat</button><p class="sub">Or leave a message below and we will reply by email.</p></div>'
+      : '<p class="sub cw-f" style="padding-bottom:0">Our team is offline right now. Leave a message and we will reply by email.</p>';
+    body = `${intro}<form id="cwf" class="cw-f"><input type="text" name="n" placeholder="Your name" maxlength="80" value="${nm}"><input type="text" name="e" placeholder="Your email" inputmode="email" maxlength="200" value="${esc(u?.email || '')}"><textarea name="b" rows="3" maxlength="4000" placeholder="Your message"></textarea><button class="btn" type="submit">Send message</button><span role="status"></span></form>`;
+  }
+  p.innerHTML = head + body;
+  if (open) cwList();
+}
+function cwList() {
+  const l = $('#cwl'); if (!l) return;
+  l.innerHTML = CW.msgs.map((m) => `<div class="m ${m.sender === 'user' ? 'me' : m.sender === 'admin' ? 'them' : 'system'}"><small>${m.sender === 'admin' ? 'Support' : m.sender === 'user' ? 'You' : ''} ${m.sender === 'system' ? '' : '· ' + timeShort(m.created_at)}</small>${esc(m.body)}</div>`).join('');
+  l.scrollTop = l.scrollHeight;
+}
+async function cwToggle() {
+  CW.open = !CW.open;
+  $('#cwp').hidden = !CW.open;
+  if (CW.poll) { clearInterval(CW.poll); CW.poll = null; }
+  if (!CW.open) return;
+  CW.unread = 0; cwBadge();
+  $('#cwp').innerHTML = '<p class="sub cw-f">Loading…</p>';
+  await cwRefreshOnline(); await cwLoadSession(); cwRender();
+  CW.poll = setInterval(async () => { const was = CW.online; await cwRefreshOnline(); if (was !== CW.online && CW.s?.status !== 'open') cwRender(); }, 45000);
+}
+async function cwStart(form) {
+  const msg = $('#cwe'), btn = form.querySelector('button');
+  btn.disabled = true;
+  const { error } = await sb.rpc('start_chat', { p_name: form.n.value.trim(), p_message: form.b.value.trim() });
+  btn.disabled = false;
+  if (error) {
+    const m = error.message;
+    msg.textContent = m.includes('support_offline') ? 'Support just went offline. Leave a message instead.' : m.includes('rate_limited') ? 'Too many chats today. Please try again tomorrow.' : m.includes('bad_message') ? 'Type a message first.' : 'Could not start the chat.';
+    if (m.includes('support_offline')) { await cwRefreshOnline(); cwRender(); }
+    return;
+  }
+  await cwLoadSession(); cwRender();
+}
+async function cwSend(form) {
+  const b = form.b.value.trim(); if (!b || !CW.s) return; form.b.value = '';
+  const { data, error } = await sb.rpc('send_chat_message', { p_session: CW.s.id, p_body: b });
+  if (error) { toast(error.message.includes('chat_closed') ? 'This chat has ended.' : 'Could not send that.', true); return; }
+  if (data && !CW.msgs.some((x) => x.id === data.id)) { CW.msgs.push(data); cwList(); }
+}
+async function cwEnd() { if (!CW.s) return; await sb.rpc('close_chat', { p_session: CW.s.id }); await cwLoadSession(); cwRender(); }
+async function sendRequest(form) {
+  const msg = form.querySelector('[role=status]'), set = (t, ok) => { msg.className = ok ? 'ok' : 'err'; msg.textContent = t; };
+  const n = form.n.value.trim(), e = form.e.value.trim(), sub = (form.s ? form.s.value : 'Support request').trim(), b = form.b.value.trim();
+  if (!n || !b || !sub || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return set('Add your name, a valid email and a message.');
+  const { error } = await sb.rpc('submit_support_request', { p_name: n, p_email: e, p_subject: sub, p_message: b });
+  if (error) return set(error.message.includes('rate_limited') ? 'You have sent several messages. Please try again later.' : 'Could not send. Please try again.');
+  form.reset(); set('Message sent. We will reply by email.', true);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey && e.target.tagName === 'TEXTAREA' && (e.target.form?.id === 'cwm' || e.target.form?.id === 'admsend')) { e.preventDefault(); e.target.form.requestSubmit(); }
+});
+
+// ---------- admin panel ----------
+const ADM = { online: false, sessions: [], cur: null, msgs: [], chan: null, hb: null };
+function admReset() { if (ADM.chan) { sb.removeChannel(ADM.chan); ADM.chan = null; } if (ADM.hb) { clearInterval(ADM.hb); ADM.hb = null; } ADM.online = false; ADM.cur = null; }
+async function admInit() {
+  if (!state.admin) return;
+  const { data } = await sb.rpc('admin_support_state'); ADM.online = !!data?.online;
+  if (!ADM.chan) {
+    ADM.chan = sb.channel('adm-watch')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, (p) => {
+        const m = p.new;
+        if (m.session_id === ADM.cur && !ADM.msgs.some((x) => x.id === m.id)) { ADM.msgs.push(m); admConvRender(); }
+        if (m.sender === 'user') { beep(); toast('New chat message'); }
+        if (LOC.pathname === '/admin/chat') admChatLoad();
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_requests' }, () => { beep(); toast('New email request'); })
+      .subscribe();
+  }
+  if (!ADM.hb) ADM.hb = setInterval(() => { if (ADM.online) sb.rpc('support_heartbeat'); }, 30000);
+}
+async function vAdmin(sec) {
+  if (!state.admin) return '<div class="card empty"><h2>Not authorized</h2><p>This area is for the KS team.</p><a class="btn" href="/dashboard">Back to dashboard</a></div>';
+  const full = state.admin === 'owner' || state.admin === 'admin';
+  const key = sec || (full ? '' : 'chat');
+  if (!full && !['chat', 'requests'].includes(key)) return vAdmin('chat');
+  const { data: st } = await sb.rpc('admin_stats'); const stats = st || {};
+  const tabs = [['', 'Overview', 1, 0], ['chat', 'Live chat', 0, stats.chats_waiting], ['requests', 'Email requests', 0, stats.new_requests], ['users', 'Users', 1, 0], ['apps', 'Applications', 1, 0], ['bot', 'Bot', 1, stats.jobs_failed], ['site', 'Site', 1, 0], ['team', 'Team', 1, 0], ['activity', 'Activity', 1, 0]].filter((t) => !t[2] || full);
+  const fn = { '': admOverview, chat: admChat, requests: admRequests, users: admUsers, apps: admApps, bot: admBot, site: admSite, team: admTeam, activity: admActivity }[key] || admOverview;
+  const body = await fn(stats);
+  return `<div class="adm"><aside class="side"><div class="crumb">Signed in as ${esc(state.admin)}</div>${tabs.map(([k, l, , n]) => `<a href="/admin${k ? '/' + k : ''}" class="${key === k ? 'on' : ''}">${l}${n ? `<span class="badge">${n}</span>` : ''}</a>`).join('')}
+    <button class="btn ${ADM.online ? '' : 'ghost'} sm" style="margin-top:.6rem" data-act="admonline">${ADM.online ? 'Support is ONLINE' : 'Support is OFFLINE'}</button>
+    <p class="sub" style="font-size:.8rem;margin-top:.4rem">${ADM.online ? 'Keep the site open to stay online.' : 'Go online to receive live chats.'}</p></aside><section>${body}</section></div>`;
+}
+function mountAdmin(sec) { if (sec === 'chat' || (!sec && !(state.admin === 'owner' || state.admin === 'admin'))) admChatLoad(); }
+
+async function admOverview(st) {
+  const { data: recent } = await sb.rpc('admin_list_users', { p_limit: 8 });
+  const t = (n, l) => `<div class="stat"><b>${n ?? 0}</b><span>${l}</span></div>`;
+  return `<h1 class="h2">Overview</h1><p class="sub" style="margin:.4rem 0 1rem">The state of KS Applications right now.</p>
+    <div class="stats">${t(st.users, 'Users')}${t(st.applications, 'Applications')}${t(st.submissions, 'Submissions')}${t(st.pending_submissions, 'Pending reviews')}${t(st.active_subs, 'Active subscriptions')}${t(st.open_chats, 'Open chats')}${t(st.new_requests, 'New email requests')}${t(st.guilds_with_bot, 'Servers with the bot')}</div>
+    <div class="card"><h3>Newest users</h3>${(recent || []).map((u) => `<div class="idrow"><span>${esc(u.username || 'Unknown')} <span class="sub">${esc(u.email || '')}</span></span><span class="sub">${esc(fmt(u.created_at))}</span></div>`).join('') || '<p class="sub">No users yet.</p>'}</div>`;
+}
+const admChat = () => '<h1 class="h2">Live chat</h1><p class="sub" style="margin:.4rem 0 1rem">Chats from the site appear here instantly. Replies go straight to the visitor.</p><div class="card chatwrap" style="padding:0"><div id="acl" class="cl"></div><div id="acc" class="cc"><p class="sub">Select a chat.</p></div></div>';
+async function admChatLoad() {
+  const { data } = await sb.from('chat_sessions').select('*').order('last_message_at', { ascending: false }).limit(100);
+  ADM.sessions = data || []; admListRender();
+  if (ADM.cur) admConvRender();
+}
+function admListRender() {
+  const l = $('#acl'); if (!l) return;
+  const rows = [...ADM.sessions].sort((a, b) => (a.status === b.status ? 0 : a.status === 'open' ? -1 : 1) || new Date(b.last_message_at) - new Date(a.last_message_at));
+  l.innerHTML = rows.length ? rows.map((x) => `<button class="cs ${ADM.cur === x.id ? 'on' : ''}" data-act="admopen" data-id="${x.id}"><b>${esc(x.name || 'Visitor')}</b>${x.needs_reply && x.status === 'open' ? '<span class="badge">reply</span>' : ''}${x.status === 'closed' ? ' <span class="tag">closed</span>' : ''}<span class="sub">${esc(x.last_message_preview || '')}</span></button>`).join('') : '<p class="sub" style="padding:1rem">No chats yet.</p>';
+}
+async function admOpenChat(id) {
+  ADM.cur = id;
+  const { data } = await sb.from('chat_messages').select('*').eq('session_id', id).order('created_at');
+  ADM.msgs = data || []; admListRender(); admConvRender();
+}
+function admConvRender() {
+  const c = $('#acc'); if (!c) return;
+  const x = ADM.sessions.find((y) => y.id === ADM.cur);
+  if (!x) { c.innerHTML = '<p class="sub">Select a chat.</p>'; return; }
+  const open = x.status === 'open';
+  c.innerHTML = `<div class="row between" style="margin-bottom:.6rem"><div><b>${esc(x.name || 'Visitor')}</b><div class="sub" style="font-size:.85rem">${esc(x.email || '')}${x.assigned_name ? ' · with ' + esc(x.assigned_name) : ''}</div></div><div class="row">${open ? `<button class="btn ghost sm" data-act="admclaim" data-id="${x.id}">Claim</button><button class="btn danger sm" data-act="admclose" data-id="${x.id}">End chat</button>` : '<span class="tag">closed</span>'}</div></div>
+    <div class="msgs" id="aml">${ADM.msgs.map((m) => `<div class="m ${m.sender === 'admin' ? 'me' : m.sender === 'system' ? 'system' : 'them'}"><small>${m.sender === 'admin' ? 'Team' : m.sender === 'user' ? esc(x.name || 'User') : ''} ${m.sender === 'system' ? '' : '· ' + timeShort(m.created_at)}</small>${esc(m.body)}</div>`).join('')}</div>
+    ${open ? '<form id="admsend" class="cw-f"><textarea name="b" rows="2" maxlength="2000" placeholder="Reply (Enter to send)"></textarea><button class="btn sm" type="submit">Send</button></form>' : ''}`;
+  const l = $('#aml'); if (l) l.scrollTop = l.scrollHeight;
+}
+async function admSend(form) {
+  const b = form.b.value.trim(); if (!b || !ADM.cur) return; form.b.value = '';
+  const { data, error } = await sb.rpc('send_chat_message', { p_session: ADM.cur, p_body: b });
+  if (error) { toast('Could not send: ' + error.message, true); return; }
+  if (data && !ADM.msgs.some((x) => x.id === data.id)) { ADM.msgs.push(data); admConvRender(); }
+  admChatLoad();
+}
+async function admRequests() {
+  const { data } = await sb.from('support_requests').select('*').order('created_at', { ascending: false }).limit(200);
+  const list = data || [];
+  return `<h1 class="h2">Email requests</h1><p class="sub" style="margin:.4rem 0 1rem">Messages left while support was offline. Reply from your own email, then mark them replied.</p>${list.length ? list.map((r) => `<div class="card"><div class="row between"><div><h3>${esc(r.subject)}</h3><span class="sub">${esc(r.name)} · ${esc(r.email)} · ${esc(fmt(r.created_at))}</span></div><span class="tag ${r.status === 'new' ? 'no' : r.status === 'replied' ? 'ok' : ''}">${r.status}</span></div><p style="white-space:pre-wrap;margin:.7rem 0;color:var(--mute)">${esc(r.message)}</p><div class="row"><a class="btn sm" href="mailto:${esc(r.email)}?subject=${encodeURIComponent('Re: ' + r.subject)}&body=${encodeURIComponent('Hi ' + r.name + ',\r\n\r\n\r\n\r\n> ' + r.message.slice(0, 500).replace(/\n/g, '\n> '))}">Reply by email</a><button class="btn ghost sm" data-act="reqstatus" data-id="${r.id}" data-v="replied">Mark replied</button><button class="btn ghost sm" data-act="reqstatus" data-id="${r.id}" data-v="closed">Close</button></div></div>`).join('') : '<div class="card empty"><h3>No requests</h3></div>'}`;
+}
+async function admUsers() {
+  const [u, t] = await Promise.all([sb.rpc('admin_list_users', { p_limit: 300 }), sb.from('plan_tiers').select('id,name').order('sort')]);
+  const tiers = t.data || [];
+  return `<h1 class="h2">Users</h1><div class="f" style="max-width:340px;margin-top:1rem"><input type="text" id="uq" placeholder="Search name, email or Discord ID"></div>
+    <div class="card" style="overflow:auto"><table id="ut"><thead><tr><th>User</th><th>Discord ID</th><th>Plan</th><th>Apps</th><th>Joined</th><th>Grant plan</th></tr></thead><tbody>${(u.data || []).map((x) => `<tr><td>${esc(x.username || 'Unknown')}<br><span class="sub">${esc(x.email || '')}</span></td><td>${esc(x.discord_id || '')}</td><td>${esc(x.tier)}</td><td>${x.apps}</td><td>${esc(fmt(x.created_at))}</td><td><div class="row"><select id="g-${x.id}">${tiers.map((y) => `<option value="${y.id}">${esc(y.name)}</option>`).join('')}</select><button class="btn ghost sm" data-act="grant" data-id="${x.id}">Grant</button><button class="btn danger sm" data-act="revoke" data-id="${x.id}">Revoke</button></div></td></tr>`).join('')}</tbody></table></div>`;
+}
+document.addEventListener('input', (e) => {
+  if (e.target.id !== 'uq') return;
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#ut tbody tr').forEach((r) => { r.hidden = !r.textContent.toLowerCase().includes(q); });
+});
+async function admApps() {
+  const { data } = await sb.rpc('admin_list_applications', { p_limit: 300 });
+  return `<h1 class="h2">Applications</h1><div class="card" style="overflow:auto;margin-top:1rem"><table><thead><tr><th>Application</th><th>Owner</th><th>Server</th><th>Submissions</th><th>Status</th><th></th></tr></thead><tbody>${(data || []).map((a) => `<tr><td>${esc(a.title)}<br><span class="sub">${KINDS[a.kind] || a.kind} · /apply/${esc(a.slug)}</span></td><td>${esc(a.owner_name || 'Unknown')}<br><span class="sub">${esc(a.owner_discord_id || '')}</span></td><td>${esc(a.guild_id || '')}</td><td>${a.submissions}</td><td><span class="tag ${a.is_open ? 'ok' : 'no'}">${a.is_open ? 'Open' : 'Closed'}</span></td><td><button class="btn ghost sm" data-act="apptoggle" data-id="${a.id}" data-v="${a.is_open ? 0 : 1}">${a.is_open ? 'Close' : 'Reopen'}</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+async function admBot(st) {
+  const { data } = await sb.from('bot_jobs').select('*').eq('status', 'failed').order('id', { ascending: false }).limit(30);
+  return `<h1 class="h2">Bot</h1><div class="stats" style="margin-top:1rem"><div class="stat"><b>${st.guilds_with_bot ?? 0}</b><span>Servers with the bot</span></div><div class="stat"><b>${st.jobs_pending ?? 0}</b><span>Jobs waiting</span></div><div class="stat"><b>${st.jobs_failed ?? 0}</b><span>Failed jobs</span></div></div>
+    <div class="card"><h3>Failed jobs</h3>${(data || []).length ? data.map((j) => `<div class="idrow"><span><b>${esc(j.type)}</b> <span class="sub">#${j.id} · ${esc(fmt(j.created_at))}<br>${esc(j.error || '')}</span></span><button class="btn ghost sm" data-act="retryjob" data-id="${j.id}">Retry</button></div>`).join('') : '<p class="sub" style="margin-top:.5rem">No failed jobs.</p>'}</div>`;
+}
+async function admSite() {
+  const { data } = await sb.from('site_settings').select('value').eq('key', 'announcement').maybeSingle();
+  const a = data?.value || {};
+  return `<h1 class="h2">Site</h1><div class="card" style="margin-top:1rem"><h3>Announcement banner</h3><p class="sub" style="margin:.4rem 0 1rem">Shown at the top of every page while enabled.</p><form id="asf"><div class="f"><label for="at">Message</label><input type="text" id="at" name="t" maxlength="200" value="${esc(a.text || '')}"></div><div class="grid2"><div class="f"><label for="al">Style</label><select id="al" name="l"><option value="info" ${a.level !== 'warn' ? 'selected' : ''}>Info</option><option value="warn" ${a.level === 'warn' ? 'selected' : ''}>Warning</option></select></div><label class="chk" style="align-self:end"><input type="checkbox" name="on" ${a.on ? 'checked' : ''}> Show the banner</label></div><div class="row"><button class="btn" type="submit">Save</button><span id="asm" role="status"></span></div></form></div>`;
+}
+async function admSaveSite(form) {
+  const msg = $('#asm'), value = { text: form.t.value.trim(), level: form.l.value, on: form.on.checked };
+  const { error } = await sb.rpc('admin_set_setting', { p_key: 'announcement', p_value: value });
+  msg.className = error ? 'err' : 'ok'; msg.textContent = error ? 'Could not save: ' + error.message : 'Saved';
+  if (!error) loadBanner();
+}
+async function admTeam() {
+  const { data } = await sb.rpc('admin_list_team');
+  const owner = state.admin === 'owner';
+  return `<h1 class="h2">Team</h1><div class="card" style="margin-top:1rem"><div class="idrow"><span><b>Founder / CEO</b> <span class="sub">Discord ID 523709000961753089</span></span><span class="tag ok">Owner</span></div>${(data || []).map((t) => `<div class="idrow"><span><b>${esc(t.username || 'Unknown')}</b> <span class="sub">${esc(t.discord_id || '')}</span></span><span class="row"><span class="tag">${t.role}</span>${owner ? `<button class="btn danger sm" data-act="teamremove" data-did="${esc(t.discord_id || '')}">Remove</button>` : ''}</span></div>`).join('')}</div>
+    ${owner ? '<div class="card"><h3>Add a team member</h3><p class="sub" style="margin:.4rem 0 1rem">They must have logged in with Discord once. Admins manage everything except the team. Support can use live chat and email requests.</p><form id="atf"><div class="grid2"><div class="f"><label for="td">Discord ID</label><input type="text" id="td" name="d" inputmode="numeric"></div><div class="f"><label for="tr">Role</label><select id="tr" name="r"><option value="support">Support</option><option value="admin">Admin</option></select></div></div><div class="row"><button class="btn" type="submit">Add</button><span id="atm" role="status"></span></div></form></div>' : ''}`;
+}
+async function admAddTeam(form) {
+  const msg = $('#atm'), d = form.d.value.trim();
+  if (!/^\d{15,25}$/.test(d)) { msg.className = 'err'; msg.textContent = 'Enter a Discord ID (numbers only).'; return; }
+  const { error } = await sb.rpc('admin_set_team_member', { p_discord_id: d, p_role: form.r.value });
+  if (error) { msg.className = 'err'; msg.textContent = error.message.includes('user_not_found') ? 'No user with that Discord ID. They must log in once first.' : 'Could not add: ' + error.message; return; }
+  toast('Team member added'); render();
+}
+async function admActivity() {
+  const { data } = await sb.from('admin_audit').select('*').order('id', { ascending: false }).limit(100);
+  return `<h1 class="h2">Activity</h1><p class="sub" style="margin:.4rem 0 1rem">Every administrator action is logged here.</p><div class="card">${(data || []).length ? data.map((a) => `<div class="idrow"><span><b>${esc(a.action)}</b> <span class="sub">${esc(a.target || '')}</span></span><span class="sub">${esc(a.actor_name || 'Unknown')} · ${esc(fmt(a.created_at))}</span></div>`).join('') : '<p class="sub">Nothing yet.</p>'}</div>`;
+}
+async function uiAct(a, el) {
+  const id = el.dataset.id;
+  try {
+    if (a === 'cwtoggle') return await cwToggle();
+    if (a === 'cwend') return await cwEnd();
+    if (a === 'hintx') { store.set('hintx', '1'); return showChromeHint(); }
+    if (a === 'banx') { store.set('banner', el.dataset.t); return loadBanner(); }
+    if (a === 'admonline') { const { error } = await sb.rpc('admin_set_online', { p_online: !ADM.online }); if (error) return toast(error.message, true); ADM.online = !ADM.online; return render(); }
+    if (a === 'admopen') return await admOpenChat(id);
+    if (a === 'admclaim') { await sb.rpc('claim_chat', { p_session: id }); return await admChatLoad(); }
+    if (a === 'admclose') { await sb.rpc('close_chat', { p_session: id }); await admChatLoad(); return await admOpenChat(id); }
+    if (a === 'grant') {
+      const tier = $('#g-' + id).value, d = prompt('Days to grant (leave empty for no expiry)');
+      if (d === null) return;
+      const { error } = await sb.rpc('admin_grant_plan', { p_user: id, p_tier: tier, p_days: d.trim() ? Number(d) : null });
+      if (error) return toast(error.message, true); toast('Plan granted'); return render();
+    }
+    if (a === 'revoke') { const { error } = await sb.rpc('admin_revoke_plan', { p_user: id }); if (error) return toast(error.message, true); toast('Granted plans revoked'); return render(); }
+    if (a === 'apptoggle') { const { error } = await sb.rpc('admin_set_application_open', { p_id: id, p_open: el.dataset.v === '1' }); if (error) return toast(error.message, true); return render(); }
+    if (a === 'retryjob') { const { error } = await sb.rpc('admin_retry_job', { p_id: Number(id) }); if (error) return toast(error.message, true); toast('Job queued again'); return render(); }
+    if (a === 'reqstatus') { const { error } = await sb.rpc('admin_update_request', { p_id: id, p_status: el.dataset.v }); if (error) return toast(error.message, true); return render(); }
+    if (a === 'teamremove') { const { error } = await sb.rpc('admin_set_team_member', { p_discord_id: el.dataset.did, p_role: null }); if (error) return toast(error.message, true); toast('Removed'); return render(); }
+  } catch (e) { toast(e.message || 'Something went wrong', true); }
+}
+
+// ---------- pages: home, policies, contact, changelog ----------
+const L = (t, body) => `<div class="phead"><h1>${t}</h1><p class="sub">Last updated ${UPDATED}</p></div><div class="prose">${body}</div>`;
+function vHome() {
+  return `<section class="hero"><div>
+      <span class="pill"><b>Live now</b> · Plans are open to everyone</span>
+      <h1>Applications for your community, <span class="hl">handled.</span></h1>
+      <p class="lead">Build a form, share one link, and review every applicant in one inbox. When you decide, the bot sends the message and gives the role.</p>
+      <div class="row">${state.session ? '<a class="btn lg" href="/dashboard">Open dashboard</a>' : '<button class="btn lg" data-act="login">Start free</button>'}<a class="btn ghost lg" href="/features">See what it does</a></div></div>
+    <div class="mock"><div class="mock-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="sub">Moderator application</span></div>
+      <div class="mock-b"><span class="stamp s-accepted">Accepted</span>
+        <div class="ans"><b>Why do you want to join the team?</b><span>I have run community events for three years and know the rules inside out.</span></div>
+        <div class="ans"><b>Timezone</b><span>CST</span></div>
+        <div class="bubble"><i>KS Bot</i>Your application "Moderator" was accepted. Welcome to the team!</div></div></div></section>
+    <div class="strip"><div><b>Free to start</b>5 applications on the Free plan</div><div><b>Verified applicants</b>Every submission has a Discord account</div><div><b>Unlimited submissions</b>On every plan</div><div><b>Live support</b>Chat with the team from any page</div></div>
+    <section class="sec"><h2>See it in action</h2><p class="lead2">One application, from the applicant's side to yours.</p><div class="mocks">
+      <div class="mock"><div class="mock-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="sub">1. The applicant fills it in</span></div><div class="mock-b"><div class="f"><label>Why do you want to join?</label><div class="fake">I have run events for three years…</div></div><div class="f"><label>Weekly availability</label><div class="fake">5 to 10 hours</div></div><span class="btn sm">Submit application</span></div></div>
+      <div class="mock"><div class="mock-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="sub">2. Your staff channel</span></div><div class="mock-b"><div class="ans"><b>New application: Moderator</b><span>Applicant: Alex · sent from Discord</span></div><div class="ans"><b>Weekly availability</b><span>5 to 10 hours</span></div><div class="row"><span class="btn sm" style="background:var(--ok);border-color:var(--ok)">Accept</span><span class="btn danger sm">Deny</span></div></div></div>
+      <div class="mock"><div class="mock-h"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="sub">3. The applicant hears back</span></div><div class="mock-b"><div class="bubble" style="margin-top:0"><i>KS Bot</i>Your application "Moderator" was accepted.</div><span class="chip">Role added: Moderator</span></div></div></div></section>
+    <section class="sec"><h2>Why not a generic form?</h2><p class="lead2">Forms collect answers. KS Applications finishes the job inside Discord.</p><div class="card" style="overflow:auto"><table><thead><tr><th></th><th>Generic form tool</th><th>KS Applications</th></tr></thead><tbody>
+      <tr><td>Verified Discord identity</td><td>No</td><td>Yes</td></tr><tr><td>Apply inside Discord</td><td>No</td><td>Yes</td></tr><tr><td>Review with buttons in your staff channel</td><td>No</td><td>Yes</td></tr><tr><td>Role given on acceptance</td><td>Manual</td><td>Automatic</td></tr><tr><td>Applicant messaged with the result</td><td>Manual</td><td>Automatic</td></tr><tr><td>One application per person</td><td>Varies</td><td>Built in</td></tr></tbody></table></div></section>
+    <section class="sec"><h2>Find your way around</h2><p class="lead2">Every part of KS Applications has its own page.</p><div class="feats">
+      <a class="feat" href="/features"><div class="n">Features</div><h3>Everything it can do</h3><p>Form builder, share links, review inbox and Discord panels.</p></a>
+      <a class="feat" href="/how-it-works"><div class="n">How it works</div><h3>Four steps, start to finish</h3><p>From creating a form to the applicant getting their role.</p></a>
+      <a class="feat" href="/templates"><div class="n">Templates</div><h3>Start from a ready-made form</h3><p>Moderator, whitelist, partnership and more.</p></a>
+      <a class="feat" href="/use-cases"><div class="n">Use cases</div><h3>Built for communities</h3><p>Staff, partnerships, whitelists and appeals.</p></a>
+      <a class="feat" href="/pricing"><div class="n">Pricing</div><h3>Free to start</h3><p>5 applications free. Upgrade for more.</p></a>
+      <a class="feat" href="/docs"><div class="n">Docs</div><h3>Set up in minutes</h3><p>Adding the bot, posting panels, reviewer roles.</p></a></div></section>
+    <section class="sec"><h2>Your data, handled with care</h2><p class="lead2">Clear policies, and tools to control your own data.</p><div class="feats">
+      <a class="feat" href="/privacy"><div class="n">Privacy</div><h3>Privacy Policy</h3><p>What we collect, why, and who sees it.</p></a>
+      <a class="feat" href="/security"><div class="n">Security</div><h3>How we protect it</h3><p>Sign-in, access controls and logged admin actions.</p></a>
+      <a class="feat" href="/legal"><div class="n">Legal</div><h3>All policies</h3><p>Terms, cookies, acceptable use and refunds in one place.</p></a></div></section>
+    <div class="band"><div><h2>Ready to run your first application?</h2><p class="sub" style="margin-top:.4rem">Free to start. No card needed.</p></div>${state.session ? '<a class="btn lg" href="/new">New application</a>' : '<button class="btn lg" data-act="login">Start free</button>'}</div>`;
+}
+Object.assign(PAGES, {
+  legal: ['Legal', 'All KS Applications policies in one place.', () => `<div class="phead"><h1>Legal and policies</h1><p class="lead2">Everything about how the Service works with your data and your money.</p></div><div class="feats">
+    <a class="feat" href="/terms"><div class="n">Agreement</div><h3>Terms of Service</h3><p>The rules for using KS Applications.</p></a>
+    <a class="feat" href="/privacy"><div class="n">Data</div><h3>Privacy Policy</h3><p>What we collect and how it is used.</p></a>
+    <a class="feat" href="/cookies"><div class="n">Browser</div><h3>Cookie Policy</h3><p>What we store in your browser.</p></a>
+    <a class="feat" href="/acceptable-use"><div class="n">Conduct</div><h3>Acceptable Use Policy</h3><p>What is not allowed on the Service.</p></a>
+    <a class="feat" href="/refunds"><div class="n">Billing</div><h3>Refunds and Cancellation</h3><p>How plans, renewals and refunds work.</p></a>
+    <a class="feat" href="/security"><div class="n">Protection</div><h3>Security</h3><p>How we protect accounts and data.</p></a>
+    <a class="feat" href="/subprocessors"><div class="n">Partners</div><h3>Service providers</h3><p>The companies that help us run the Service.</p></a>
+    <a class="feat" href="/accessibility"><div class="n">Access</div><h3>Accessibility</h3><p>Our commitment and how to report problems.</p></a></div>
+    <p class="sub" style="margin-top:1.5rem">The Service is made by ${STUDIO}, a division of ${CO}.</p>`],
+  cookies: ['Cookie Policy', 'What KS Applications stores in your browser.', () => L('Cookie Policy', `<p>KS Applications keeps its browser storage to the minimum needed to work. We do not use advertising cookies or cross-site tracking.</p>
+    <h2>What we store</h2><ul><li><strong>Sign-in session.</strong> Keeps you logged in. Required for the Service to work.</li><li><strong>Return address.</strong> Remembers the page you were on so we can bring you back after you log in. Required.</li><li><strong>Server sync marker.</strong> Stops us re-reading your Discord server list on every page load. Required.</li><li><strong>Dismissed banner.</strong> Remembers an announcement you closed. Optional convenience.</li></ul>
+    <h2>Third parties</h2><p>Some pages load content from other companies, who may set their own cookies or receive your IP address: PayPal on the pricing page when you subscribe, Google Fonts for typefaces, jsDelivr for a script library, and Discord or X when you log in with them. Their policies apply.</p>
+    <h2>Your choices</h2><p>You can clear site data in your browser settings at any time. Doing so logs you out. Blocking storage entirely will stop login from working.</p><p>See also the <a href="/privacy">Privacy Policy</a>.</p>`)],
+  'acceptable-use': ['Acceptable Use Policy', 'What is not allowed on KS Applications.', () => L('Acceptable Use Policy', `<p>This policy applies to everyone who uses KS Applications, including people who build applications and people who apply. It is part of the <a href="/terms">Terms of Service</a>.</p>
+    <h2>You may not</h2><ul><li>Break the law, or help others do so.</li><li>Harass, threaten, hate on or discriminate against people, or use applications to unlawfully discriminate.</li><li>Collect information from children under 13, or create or share sexual content involving minors.</li><li>Ask applicants for passwords, payment card numbers, government ID numbers or other highly sensitive data.</li><li>Use forms for phishing, scams, malware or to deceive people about who is collecting their information.</li><li>Send spam or unsolicited bulk messages through the Service or the bot.</li><li>Impersonate another person, community or the KS team.</li><li>Scrape the Service, probe it for weaknesses, overload it, or access data that is not yours.</li><li>Work around plan limits or abuse free tiers, support chat or the contact form.</li></ul>
+    <h2>Enforcement</h2><p>We may remove content, close applications, restrict features or suspend accounts that break this policy, and may report serious violations to the authorities. Where we can, we will tell you why.</p>
+    <h2>Reporting</h2><p>To report abuse, use the <a href="/contact">contact page</a> or the chat button.</p>`)],
+  refunds: ['Refunds and Cancellation', 'How plans, renewals, cancellation and refunds work.', () => L('Refund and Cancellation Policy', `<h2>Plans</h2><p>The Free plan costs nothing. Paid plans are recurring subscriptions billed through PayPal for the period you choose, and they renew automatically until you cancel.</p>
+    <h2>Cancelling</h2><p>You can cancel at any time in your PayPal account. Your plan stays active until the end of the period you already paid for, and then returns to Free.</p>
+    <h2>Refunds</h2><p>Payments are not refunded once a billing period has started, except where the law requires. If you believe you were charged by mistake, or were charged after cancelling, contact us as soon as you can through the <a href="/contact">contact page</a> and we will review it.</p>
+    <h2>Downgrades</h2><p>If you move to a lower plan, the applications you already have are kept, but you cannot create new ones above your new limit.</p>
+    <h2>Disputes</h2><p>Please contact us before opening a payment dispute so we can try to fix the problem quickly.</p>
+    <h2>Price changes</h2><p>We may change prices or limits for future billing periods and will give notice on the site.</p><p>See also the <a href="/terms">Terms of Service</a>.</p>`)],
+  security: ['Security', 'How KS Applications protects accounts and data.', () => L('Security', `<p>We take the safety of your accounts and your applicants' information seriously. This page describes what we do. No online service can promise perfect security.</p>
+    <h2>Sign-in</h2><p>You sign in with Discord, X or an emailed link. We do not store passwords.</p>
+    <h2>Access controls</h2><p>Our database enforces row-level security, so people can only read the data they are entitled to: their own applications, the submissions made to them, and their own submissions. The Discord bot uses a separate server-side key that is never sent to browsers.</p>
+    <h2>Payments</h2><p>Payments are handled by PayPal. We never see or store card or bank details, and subscription changes are confirmed by PayPal before we apply them.</p>
+    <h2>Team access and logging</h2><p>Access for the KS team is limited by role, and administrator actions are recorded in an activity log.</p>
+    <h2>In transit</h2><p>The site and our providers use encrypted connections.</p>
+    <h2>Your browser's padlock</h2><p>Chrome no longer shows a padlock for secure sites. It shows a settings icon at the left of the address bar instead, and clicking it says “Connection is secure”. Firefox and Edge still show a padlock. If any browser says “Not secure” in words, do not enter anything and tell us through the <a href=\"/contact\">contact page</a>.</p>
+    <h2>Reporting a vulnerability</h2><p>If you find a security problem, please tell us privately through the <a href="/contact">contact page</a> and give us reasonable time to fix it before sharing it publicly. Do not access other people's data while testing.</p>`)],
+  subprocessors: ['Service providers', 'The companies that help KS Applications run.', () => L('Service providers', `<p>These companies process information on our behalf or are part of how you use the Service.</p><div class="card" style="overflow:auto"><table><thead><tr><th>Provider</th><th>What it does for us</th></tr></thead><tbody>
+    <tr><td>Supabase</td><td>Database, authentication, realtime updates and server functions</td></tr><tr><td>Discord</td><td>Login, and delivery of bot messages and role changes</td></tr><tr><td>X</td><td>Login</td></tr><tr><td>PayPal</td><td>Subscription payments</td></tr><tr><td>Our web host</td><td>Serves the website</td></tr><tr><td>Google Fonts</td><td>Typeface delivery</td></tr><tr><td>jsDelivr</td><td>Delivers a script library used by the site</td></tr></tbody></table></div><p>See the <a href="/privacy">Privacy Policy</a> for how information is used.</p>`)],
+  accessibility: ['Accessibility', 'Our commitment to an accessible KS Applications.', () => L('Accessibility', `<p>We want KS Applications to be usable by everyone. We aim to follow the Web Content Accessibility Guidelines (WCAG) 2.1 level AA, including keyboard navigation, readable contrast, clear labels on form fields and respect for reduced-motion settings.</p><p>We are still improving. If you hit a barrier, tell us what page you were on and what happened through the <a href="/contact">contact page</a>, and we will work on it.</p>`)],
+  changelog: ['Changelog', 'What is new in KS Applications.', () => `<div class="phead"><h1>Changelog</h1></div><div class="prose"><h2>Launch week</h2><ul><li>Admin panel for the KS team with live chat, email requests, users, applications, bot health and an activity log.</li><li>Live chat widget on every page, with an email form when support is offline.</li><li>Policies: Terms, Privacy, Cookies, Acceptable Use, Refunds, Security, service providers and accessibility.</li><li>Clean addresses with no # in the URL.</li><li>Login with Discord, X or email.</li><li>Templates, servers page, account page with data download and deletion, dashboard activity chart and CSV export.</li><li>Apply and review directly inside Discord, with automatic messages and roles.</li><li>Plans open to everyone, starting free with five applications.</li></ul></div>`],
+  contact: ['Contact', 'Contact Kurrasch Systems Studios about KS Applications.', () => `<div class="phead"><h1>Contact</h1><p class="lead2">Chat with us live when support is online, or leave a message and we will reply by email.</p></div><div style="max-width:560px"><p class="sub" style="margin-bottom:1rem">${SUPPORT_EMAIL ? `You can also email <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>. ` : ''}For live chat, use the Chat with us button at the bottom right of any page.</p>
+    <form id="cf" class="card"><div class="grid2"><div class="f"><label for="cn">Name</label><input type="text" id="cn" name="n" maxlength="80" value="${esc(state.session?.user?.user_metadata?.full_name || '')}"></div><div class="f"><label for="ce">Email</label><input type="text" id="ce" name="e" inputmode="email" maxlength="200" value="${esc(state.session?.user?.email || '')}"></div></div><div class="f"><label for="cs">Subject</label><input type="text" id="cs" name="s" maxlength="120"></div><div class="f"><label for="cm">Message</label><textarea id="cm" name="b" maxlength="4000"></textarea></div><div class="row"><button class="btn" type="submit">Send message</button><span role="status"></span></div></form></div>`]
+});
+
+
+// ---------- dashboard tabs + server metrics ----------
+const dur = (h) => h == null ? '–' : h < 1 ? Math.max(1, Math.round(h * 60)) + ' min' : h < 48 ? Number(h).toFixed(1) + ' h' : (h / 24).toFixed(1) + ' days';
+const rateOf = (m) => { const d = (m.accepted || 0) + (m.denied || 0); return d ? Math.round(m.accepted / d * 100) + '%' : '–'; };
+async function vDash(view) {
+  const tabs = `<div class="tabs"><a href="/dashboard" class="${view === 'metrics' ? '' : 'on'}">Applications</a><a href="/dashboard/metrics" class="${view === 'metrics' ? 'on' : ''}">Server metrics</a></div>`;
+  return tabs + (view === 'metrics' ? await vMetrics() : await vDashApps());
+}
+async function vMetrics() {
+  const q = new URLSearchParams(LOC.search), server = q.get('server') || '';
+  const days = [7, 14, 30, 90].includes(Number(q.get('days'))) ? Number(q.get('days')) : 30;
+  const { data: m, error } = await sb.rpc('my_metrics', { p_guild: server || null, p_days: days });
+  const name = server ? (state.guilds.find((g) => g.id === server)?.name || 'this server') : 'all your applications';
+  const controls = `<div class="row" style="margin:1rem 0;align-items:flex-end"><div class="f" style="margin:0"><label for="mt-server" class="sub">Server</label><select id="mt-server"><option value="">All my applications</option>${state.guilds.map((g) => `<option value="${esc(g.id)}" ${g.id === server ? 'selected' : ''}>${esc(g.name)}</option>`).join('')}</select></div><div class="f" style="margin:0"><label for="mt-days" class="sub">Period</label><select id="mt-days">${[7, 14, 30, 90].map((d) => `<option value="${d}" ${d === days ? 'selected' : ''}>Last ${d} days</option>`).join('')}</select></div>${m && m.total ? '<button class="btn ghost sm" data-act="mtcsv">Download CSV</button>' : ''}</div>`;
+  const head = `<div class="dh"><div><h1 class="h2">Server metrics</h1><p class="sub">How ${esc(name)} is performing.</p></div></div>`;
+  if (error || !m) return head + controls + '<div class="card empty"><h3>Could not load metrics</h3><p>Try again in a moment. If you picked a server, you need Manage Server permission on it.</p></div>';
+  window.__mt = { m, name };
+  if (!m.total) return head + controls + `<div class="card empty"><h3>No submissions yet</h3><p>Once people apply, you will see activity, decisions and response times here.</p><a class="btn" href="/templates">Start from a template</a></div>`;
+  const wnd = m.window, decided = m.accepted + m.denied;
+  const delta = m.prev_window ? Math.round((wnd - m.prev_window) / m.prev_window * 100) : null;
+  const trend = delta == null ? (wnd ? 'No earlier period to compare' : '') : `<span class="${delta >= 0 ? 'up' : 'down'}">${delta >= 0 ? '▲' : '▼'} ${Math.abs(delta)}%</span> vs the previous ${days} days`;
+  const tile = (b, l, sub) => `<div class="stat"><b>${b}</b><span>${l}</span>${sub ? `<div class="sub" style="font-size:.85rem;margin-top:.35rem">${sub}</div>` : ''}</div>`;
+  const maxD = Math.max(1, ...m.daily.map((d) => d.count)), maxW = Math.max(1, ...m.weekday);
+  const pc = (n) => wnd ? n / wnd * 100 : 0, a = pc(m.accepted), b = a + pc(m.denied), c = b + pc(m.pending_window);
+  const legend = [['--ok', 'Accepted', m.accepted], ['--no', 'Denied', m.denied], ['--wait', 'Pending', m.pending_window], ['--mute', 'Withdrawn', m.withdrawn]].map(([v, l, n]) => `<div><i style="background:var(${v})"></i>${l}: <b>${n}</b></div>`).join('');
+  const src = m.by_source || {}, site = src.site || 0, disc = src.discord || 0, srcTot = site + disc;
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const busiest = m.weekday.indexOf(maxW), top = m.by_application[0];
+  const insights = [
+    maxW > 0 ? `Busiest day: <b>${dayNames[busiest]}</b> (${maxW} submission${maxW === 1 ? '' : 's'})` : '',
+    top && top.total ? `Most active application: <b>${esc(top.title)}</b> with ${top.total} submission${top.total === 1 ? '' : 's'}` : '',
+    m.oldest_pending_hours != null ? (m.oldest_pending_hours > 48 ? `Your oldest pending application has waited <b>${dur(m.oldest_pending_hours)}</b>. Applicants get anxious, so try to clear the backlog.` : `Your oldest pending application has waited <b>${dur(m.oldest_pending_hours)}</b>.`) : 'Nothing is waiting for review. Nice work.',
+    m.avg_decision_hours != null ? `Reviewers take <b>${dur(m.avg_decision_hours)}</b> on average to decide.` : ''
+  ].filter(Boolean).map((t) => `<div class="insight">${t}</div>`).join('');
+  return head + controls + `<div class="stats">
+      ${tile(wnd, `Submissions, last ${days} days`, trend)}
+      ${tile(m.pending, 'Pending review now', m.oldest_pending_hours != null ? 'Oldest: ' + dur(m.oldest_pending_hours) : '')}
+      ${tile(rateOf(m), 'Acceptance rate', `${m.accepted} accepted · ${m.denied} denied`)}
+      ${tile(dur(m.avg_decision_hours), 'Average time to decide')}
+      ${tile(`${m.open_applications}<small> / ${m.applications}</small>`, 'Applications open')}</div>
+    <div class="card"><div class="row between"><h3>Submissions per day</h3><span class="sub">${wnd} in ${days} days</span></div>
+      <div class="bars" style="margin-top:.8rem;height:120px" role="img" aria-label="Submissions per day">${m.daily.map((d) => `<div title="${d.count} on ${new Date(d.day + 'T00:00:00').toLocaleDateString()}"><i style="height:${Math.round(d.count / maxD * 100)}%"></i></div>`).join('')}</div>
+      <div class="axis"><span>${new Date(m.daily[0].day + 'T00:00:00').toLocaleDateString([], { month: 'short', day: 'numeric' })}</span><span>${new Date(m.daily[m.daily.length - 1].day + 'T00:00:00').toLocaleDateString([], { month: 'short', day: 'numeric' })}</span></div></div>
+    <div class="grid3">
+      <div class="card"><h3>Outcomes</h3><div class="row" style="gap:1.2rem;margin-top:.9rem;flex-wrap:nowrap"><div class="donut" role="img" aria-label="Outcomes" style="background:conic-gradient(var(--ok) 0 ${a}%, var(--no) ${a}% ${b}%, var(--wait) ${b}% ${c}%, var(--mute) ${c}% 100%)"></div><div class="legend">${legend}</div></div></div>
+      <div class="card"><h3>Review funnel</h3><div style="margin-top:.9rem">
+        <div class="sub">Submitted <b style="color:var(--ink)">${wnd}</b></div><div class="hb"><i style="width:100%"></i></div>
+        <div class="sub">Decided <b style="color:var(--ink)">${decided}</b></div><div class="hb"><i style="width:${wnd ? Math.round(decided / wnd * 100) : 0}%"></i></div>
+        <div class="sub">Accepted <b style="color:var(--ink)">${m.accepted}</b></div><div class="hb"><i style="width:${wnd ? Math.round(m.accepted / wnd * 100) : 0}%;background:var(--ok)"></i></div></div></div>
+      <div class="card"><h3>By day of week</h3><div class="bars" style="margin-top:.9rem;height:110px">${m.weekday.map((n) => `<div title="${n}"><i style="height:${Math.round(n / maxW * 100)}%"></i></div>`).join('')}</div><div class="axis7"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div></div>
+      <div class="card"><h3>Where people apply</h3>${srcTot ? `<div class="sbar" role="img" aria-label="Website versus Discord"><i style="width:${site / srcTot * 100}%;background:var(--acc)"></i><i style="width:${disc / srcTot * 100}%;background:#5865f2"></i></div><div class="legend"><div><i style="background:var(--acc)"></i>Website: <b>${site}</b></div><div><i style="background:#5865f2"></i>Inside Discord: <b>${disc}</b></div></div>` : '<p class="sub" style="margin-top:.5rem">No submissions in this period.</p>'}</div></div>
+    <div class="card"><h3>Insights</h3><div style="margin-top:.4rem">${insights}</div></div>
+    <div class="card" style="overflow:auto"><h3>By application</h3><table style="margin-top:.6rem"><thead><tr><th>Application</th><th>Submissions</th><th>Pending</th><th>Accepted</th><th>Denied</th><th>Rate</th><th></th></tr></thead><tbody>${m.by_application.map((x) => `<tr><td>${esc(x.title)} <span class="tag ${x.is_open ? 'ok' : 'no'}">${x.is_open ? 'Open' : 'Closed'}</span></td><td>${x.total}</td><td>${x.pending}</td><td>${x.accepted}</td><td>${x.denied}</td><td>${rateOf(x)}</td><td><a class="btn ghost sm" href="/inbox/${x.id}">Inbox</a></td></tr>`).join('')}</tbody></table></div>`;
+}
+function mtCsv() {
+  const { m, name } = window.__mt || {};
+  if (!m) return;
+  const cell = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const rows = [['Metrics for', name, `last ${m.days} days`], [], ['Application', 'Submissions', 'Pending', 'Accepted', 'Denied'], ...m.by_application.map((x) => [x.title, x.total, x.pending, x.accepted, x.denied]), [], ['Day', 'Submissions'], ...m.daily.map((d) => [d.day, d.count])];
+  download(new Blob(['\ufeff' + rows.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'server-metrics.csv');
+}
+document.addEventListener('change', (e) => {
+  if (e.target.id !== 'mt-server' && e.target.id !== 'mt-days') return;
+  const sv = $('#mt-server').value, dy = $('#mt-days').value;
+  go('/dashboard/metrics?' + (sv ? 'server=' + encodeURIComponent(sv) + '&' : '') + 'days=' + dy);
+});
+
+// ---------- router ----------
+let rid = 0;
+const DESC = 'Build applications for your Discord community, share one link, and review everyone in one inbox. Made by Kurrasch Systems Studios, a division of Kurrasch Gaming Merch Store LLC.';
+const PROTECTED = ['dashboard', 'new', 'edit', 'inbox', 'servers', 'account', 'admin'];
+async function render() {
+  const id = ++rid, path = LOC.pathname.replace(/\/+$/, '') || '/', seg = path.split('/').filter(Boolean), r = seg[0] || '', arg = decodeURIComponent(seg[1] || '');
+  renderAcct();
+  if (r === 'plans') return go('/pricing', true);
+  let html = '', title = '', desc = DESC;
+  const asyncRoute = ['apply', 'edit', 'new', 'inbox', 'dashboard', 'servers', 'account', 'pricing', 'admin'].includes(r);
+  if (asyncRoute) $('#app').innerHTML = '<p class="sub">Loading…</p>';
+  try {
+    if (PROTECTED.includes(r) && !state.session) { html = vNeedLogin(); title = 'Log in'; }
+    else if (PAGES[r] && !arg) { const p = PAGES[r]; title = p[0]; desc = p[1]; html = await p[2](); }
+    else if (r === '') html = vHome();
+    else if (r === 'login') { title = 'Log in'; html = vLogin(); }
+    else if (r === 'auth' && arg === 'callback') { title = 'Signing in'; html = vCallback(); }
+    else if (r === 'apply' && arg) { title = 'Apply'; html = await vApply(arg); }
+    else if (r === 'dashboard') { title = arg === 'metrics' ? 'Server metrics' : 'Dashboard'; html = await vDash(arg); }
+    else if (r === 'new') { title = 'New application'; html = await vBuilder(null); }
+    else if (r === 'edit' && arg) { title = 'Edit application'; html = await vBuilder(arg); }
+    else if (r === 'inbox' && arg) { title = 'Inbox'; html = await vInbox(arg); }
+    else if (r === 'servers' && !arg) { title = 'Servers'; html = vServers(); }
+    else if (r === 'servers') { title = 'Server'; html = await vServer(arg); }
+    else if (r === 'admin') { title = 'Admin'; html = await vAdmin(arg); }
+    else if (r === 'account') { title = 'Account'; html = await vAccount(); }
+    else { title = 'Not found'; html = vNotFound(); }
+  } catch (e) { console.error(e); html = '<div class="card empty"><h3>Something went wrong</h3><p>Refresh the page and try again.</p></div>'; }
+  if (id !== rid) return;
+  document.title = title ? `${title} | KS Applications` : 'KS Applications | Applications for Discord communities';
+  document.querySelector('meta[name=description]').setAttribute('content', desc);
+  $('#app').innerHTML = html;
+  if (r === 'pricing') mountPlans();
+  if (r === 'admin' && state.admin) mountAdmin(arg);
+}
+window.addEventListener('popstate', render);
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href]');
+  if (!a || a.target === '_blank' || a.hasAttribute('download') || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+  const href = a.getAttribute('href');
+  if (!href.startsWith('/') || href.startsWith('//')) return;
+  e.preventDefault();
+  go(href);
+});
+document.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-act]'); if (!el || el.tagName === 'SELECT') return;
+  const a = el.dataset.act;
+  if (a === 'login') login();
+  else if (a === 'discord') loginProvider('discord');
+  else if (a === 'x') loginProvider('x');
+  else if (a === 'linkdiscord') linkProvider('discord');
+  else if (a === 'linkx') linkProvider('x');
+  else if (a === 'csv') csv();
+  else if (a === 'mtcsv') mtCsv();
+  else if (a.startsWith('cw') || a.startsWith('adm') || ['grant', 'revoke', 'apptoggle', 'retryjob', 'reqstatus', 'teamremove', 'banx', 'hintx'].includes(a)) uiAct(a, el);
+  else if (a === 'export') exportData();
+  else if (a === 'deleteacct') deleteAccount();
+  else if (a === 'logout') { await sb.auth.signOut(); go('/'); }
+  else if (a === 'copy') { try { await navigator.clipboard.writeText(linkFor(el.dataset.slug)); toast('Link copied'); } catch (x) { toast(linkFor(el.dataset.slug)); } }
+  else if (a === 'del') { if (confirm('Delete this application and all of its submissions? This cannot be undone.')) { const { error } = await sb.from('applications').delete().eq('id', el.dataset.id); if (error) toast(error.message, true); else { toast('Application deleted'); render(); } } }
+  else if (a === 'addq') { readForm(); draft.questions.push({ id: uid(), type: 'short', label: '', required: false, options: [] }); renderQs(); }
+  else if (a === 'delq') { readForm(); draft.questions.splice(+el.dataset.i, 1); renderQs(); }
+  else if (a === 'up' || a === 'down') { readForm(); const i = +el.dataset.i, j = a === 'up' ? i - 1 : i + 1, q = draft.questions; [q[i], q[j]] = [q[j], q[i]]; renderQs(); }
+  else if (a === 'filter') { inboxFilter = el.dataset.v; render(); }
+  else if (a === 'review') {
+    const note = $('#n-' + el.dataset.id)?.value || '';
+    el.disabled = true;
+    const { error } = await sb.rpc('review_submission', { p_id: el.dataset.id, p_status: el.dataset.v, p_note: note });
+    if (error) { toast(error.message.includes('already_decided') ? 'Already decided.' : error.message, true); el.disabled = false; } else { toast('Decision saved. The applicant will be messaged.'); render(); }
+  }
+});
+document.addEventListener('change', (e) => { if (e.target.dataset?.act === 'qtype') { readForm(); renderQs(); } });
+document.addEventListener('submit', (e) => {
+  if (e.target.id === 'bf') { e.preventDefault(); saveDraft(); }
+  if (e.target.id === 'af') { e.preventDefault(); submitApply(e.target); }
+  if (e.target.id === 'ef') { e.preventDefault(); emailLogin(e.target); }
+  if (e.target.id === 'cf' || e.target.id === 'cwf') { e.preventDefault(); sendRequest(e.target); }
+  if (e.target.id === 'cws') { e.preventDefault(); cwStart(e.target); }
+  if (e.target.id === 'cwm') { e.preventDefault(); cwSend(e.target); }
+  if (e.target.id === 'admsend') { e.preventDefault(); admSend(e.target); }
+  if (e.target.id === 'asf') { e.preventDefault(); admSaveSite(e.target); }
+  if (e.target.id === 'atf') { e.preventDefault(); admAddTeam(e.target); }
+  if (e.target.id === 'sf') { e.preventDefault(); saveServer(e.target); }
+});
+
+// ---------- Chrome padlock notice ----------
+function showChromeHint() {
+  const el = $('#hint'); if (!el) return;
+  const ua = navigator.userAgent || '';
+  const chrome = /Chrome\//.test(ua) && !/Edg\/|OPR\/|SamsungBrowser|Firefox|Vivaldi/.test(ua);
+  if (!chrome || store.get('hintx') === '1' || location.protocol !== 'https:') { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="hintbox"><span><b>Using Chrome and do not see a padlock?</b> Chrome replaced the padlock with a settings icon in 2023. Click the icon at the left of the address bar and it will say “Connection is secure”. This site is served over HTTPS.</span><button class="ban-x" data-act="hintx" aria-label="Dismiss">×</button></div>';
+}
+
+// ---------- boot ----------
+(function legacyHash() {
+  const h = location.hash;
+  if (!h.startsWith('#/')) return;
+  const m = h.slice(1).split('/').filter(Boolean), r = m[0], a = m[1];
+  const map = { a: '/apply/' + (a || ''), edit: a ? '/edit/' + a : '/new', inbox: '/inbox/' + (a || ''), plans: '/pricing', login: '/login' };
+  try { history.replaceState(null, '', map[r] || '/'); } catch (e) { /* preview sandbox */ }
+})();
+renderAcct();
+cwMount();
+loadBanner();
+showChromeHint();
+$('#app').innerHTML = '<p class="sub">Loading…</p>';
+setTimeout(() => { if (!booted) { booted = true; render(); } }, 4000);
+
+</script>
+</body>
+</html>
